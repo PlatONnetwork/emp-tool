@@ -1,4 +1,6 @@
-#include "circuit_generator.h"
+#include <emp-tool.h>
+
+using std::string;
 
 void ham(int n) {
 	Integer a(n, 0, ALICE);
@@ -37,6 +39,7 @@ int main(int argc, char** argv) {
 	setup_circuit_generator(true, "sort");
 //	sort(1024*4);	
 //	mult(2048);
-	ham(1<<20);
+	ham(1<<10);
 	finalize_circuit_generator();
+    std::cout << "passed" << std::endl;
 }
