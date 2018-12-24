@@ -1,4 +1,4 @@
-emp-toolkit_tmpfile
+build/
 CMakeCache.txt
 CMakeFiles/
 Makefile
@@ -33,8 +33,3 @@ install_manifest.txt
 *.exe
 *.out
 *.app
-
-x64/
-*.user
-*.filters
-.vs
