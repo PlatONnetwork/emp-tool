@@ -1,0 +1,64 @@
+cmake_minimum_required (VERSION 2.8.11)
+project (emptool)
+set(NAME "emp-tool")
+
+include(cmake/common.cmake)
+include(cmake/source_of_randomness.cmake)
+include(cmake/threading.cmake)
+
+find_package(OpenSSL REQUIRED)
+if(OT_NP_USE_MIRACL)
+	ADD_DEFINITIONS(-DOT_NP_USE_MIRACL=1)
+	link_directories(../miracl/build)
+	link_libraries(miracl)
+else()
+	find_package(relic REQUIRED)
+	find_package(GMP REQUIRED)
+	link_libraries(${OPENSSL_LIBRARIES})
+	link_libraries(${RELIC_LIBRARIES})
+endif()
+#find_package(relic REQUIRED)
+#find_package(GMP REQUIRED)
+
+find_package(Boost REQUIRED COMPONENTS system)
+include_directories(${RELIC_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${GMP_INCLUDE_DIR})
+include_directories(../miracl/include)
+
+
+# Installation
+#source list
+aux_source_directory(.          sources)
+aux_source_directory(./emp-tool/io       sources)
+aux_source_directory(./emp-tool/gc       sources)
+aux_source_directory(./emp-tool/garble  sources)
+aux_source_directory(./emp-tool/circuits       sources)
+aux_source_directory(./emp-tool/utils    sources)
+aux_source_directory(./emp-tool/execution    sources)
+aux_source_directory(./emp-tool  sources)
+
+message(STATUS "sources: ${sources}")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function")
+
+link_libraries(${GMP_LIBRARIES})
+add_library(${NAME} SHARED ${sources})
+
+install(DIRECTORY emp-tool DESTINATION include/)
+install(DIRECTORY cmake/ DESTINATION cmake/)
+install(TARGETS ${NAME} DESTINATION lib)
+
+# Test cases
+macro (add_test _name)
+	add_test_with_lib(${_name} "")
+endmacro()
+
+add_test(prg)
+add_test(hash)
+add_test(prp)
+add_test(com)
+add_test(netio)
+add_test(bit)
+add_test(int)
+add_test(float)
+add_test(garble)
+add_test(gen_circuit)

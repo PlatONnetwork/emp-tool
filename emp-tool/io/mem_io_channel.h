@@ -1,41 +1,42 @@
 #include <string>
-#include "io_channel.h"
-#include "file_io_channel.h"
+#include "emp-tool/io/io_channel.h"
+#include "emp-tool/io/file_io_channel.h"
 
 #ifndef MEM_IO_CHANNEL
 #define MEM_IO_CHANNEL
 
 /** @addtogroup IO
-    @{
-  */
-  
-class MemIO: public IOChannel<MemIO> { public:
+  @{
+ */
+namespace emp {
+class MemIO: public IOChannel { public:
 	char * buffer = nullptr;
-	int size = 0;
-	int read_pos = 0;
-	int cap;
+	int64_t size = 0;
+	int64_t read_pos = 0;
+	int64_t cap;
 
-	MemIO(int _cap=1024*1024) {
+	MemIO(int64_t _cap=1024*1024) {
 		this->cap = _cap;
 		buffer = new char[cap];
 		size = 0;
 	}
-	~MemIO(){
+	~MemIO() {
 		if(buffer!=nullptr)
 			delete[] buffer;
 	}
-	void load_from_file(FileIO * fio, uint64_t size) {
+	void load_from_file(FileIO * fio, int64_t size) {
 		delete[] buffer;
 		buffer = new char[size];
-		this->cap = (int)size;
+		this->cap = size;
 		this->read_pos = 0;
-		this->size = (int) size;
-		fio->recv_data(buffer, (int)size);
+		this->size = size;
+		fio->recv_data(buffer, size);
 	}
-	void clear(){
+	void clear() {
 		size = 0;
 	}
-	void send_data_impl(const void * data, int len) {
+	
+	int send_data(const void * data, int len) {
 		if(size + len >= cap){
 			char * new_buffer = new char[2*(cap+len)];
 			memcpy(new_buffer, buffer, size);
@@ -45,16 +46,22 @@ class MemIO: public IOChannel<MemIO> { public:
 		}
 		memcpy(buffer + size, data, len);
 		size += len;
+
+		return len;
 	}
 
-	void recv_data_impl(void  * data, int len) {
+	int recv_data(void  * data, int len) {
 		if(read_pos + len <= size) {
 			memcpy(data, buffer + read_pos, len);
 			read_pos += len;
 		} else {
 			fprintf(stderr,"error: mem_recv_data\n");
+			return -1;
 		}
+
+		return len;
 	}
 };
 /**@}*/
+}
 #endif//MEM_IO_CHANNEL_H__

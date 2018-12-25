@@ -11,14 +11,14 @@
 //#include <netinet/in.h>
 //#include <sys/socket.h>
 #include <string>
-#include "io_channel.h"
-using namespace std;
+#include "emp-tool/io/io_channel.h"
 
 /** @addtogroup IO
     @{
   */
   
-class FileIO: public IOChannel<FileIO> { public:
+namespace emp {
+class FileIO: public IOChannel { public:
 	uint64_t bytes_sent = 0;
 	int mysocket = -1;
 	FILE * stream = nullptr;
@@ -46,27 +46,38 @@ class FileIO: public IOChannel<FileIO> { public:
 	void reset() {
 		rewind(stream);
 	}
-	void send_data_impl(const void * data, int len) {
+	int send_data(const void * data, int len) {
 		bytes_sent += len;
-        size_t sent = 0;
+		int sent = 0;
 		while(sent < len) {
-			auto res = fwrite(sent+(char*)data, 1, len-sent, stream);
+			int res = fwrite(sent+(char*)data, 1, len-sent, stream);
 			if (res >= 0)
 				sent+=res;
 			else
-				fprintf(stderr,"error: file_send_data %d\n", (int)res);
+			{
+				fprintf(stderr,"error: file_send_data %d\n", res);
+				return -1;
+			}	
 		}
+
+		return len;
 	}
-	void recv_data_impl(void  * data, int len) {
-		size_t sent = 0;
+	int recv_data(void  * data, int len) {
+		int sent = 0;
 		while(sent < len) {
-			auto res = fread(sent+(char*)data, 1, len-sent, stream);
+			int res = fread(sent+(char*)data, 1, len-sent, stream);
 			if (res >= 0)
 				sent+=res;
 			else 
-				fprintf(stderr,"error: file_recv_data %d\n", (int)res);
+			{
+				fprintf(stderr,"error: file_recv_data %d\n", res);
+				return -1;
+			}
 		}
+
+		return len;
 	}
 };
 /**@}*/
+}
 #endif//FILE_IO_CHANNEL

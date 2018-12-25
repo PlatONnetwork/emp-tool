@@ -1,39 +1,38 @@
+#ifndef OT_NP_USE_MIRACL
 #ifndef HASH_H__
 #define HASH_H__
-#include "emp-tool/utils/block.h"
-#include "emp-tool/utils/config.h"
-//#include <openssl/sha.h>
-#include <cryptoTools/Crypto/sha1.h>
-#include <stdio.h>
-#include "utils_ec.h"
-/** @addtogroup BP
-    @{
-  */
 
-class Hash {
-	osuCrypto::SHA1 hash;
+#include "block.h"
+#include "constants.h"
+#include <openssl/sha.h>
+#include <stdio.h>
+
+extern "C" {
+#include <relic/relic.h>
+}
+
+/** @addtogroup BP
+  @{
+ */
+namespace emp {
+class Hash { public:
+	SHA256_CTX hash;
 	char buffer[HASH_BUFFER_SIZE];
 	int size = 0;
-	public:
-	static const int DIGEST_SIZE = 20;
+	static const int DIGEST_SIZE = 32;
 	Hash() {
-		//SHA1_Init(&hash);
+		SHA256_Init(&hash);
 	}
 	~Hash() {
 	}
 	void put(const void * data, int nbyte) {
 		if (nbyte > HASH_BUFFER_SIZE)
-		{
-			hash.Update((uint8_t*) data, nbyte);
-			//SHA1_Update(&hash, data, nbyte);
-		}
+			SHA256_Update(&hash, data, nbyte);
 		else if(size + nbyte < HASH_BUFFER_SIZE) {
 			memcpy(buffer+size, data, nbyte);
 			size+=nbyte;
 		} else {
-			hash.Update((uint8_t*)buffer, nbyte);
-
-			//SHA1_Update(&hash, (char*)buffer, size);
+			SHA256_Update(&hash, (char*)buffer, size);
 			memcpy(buffer, data, nbyte);
 			size = nbyte;
 		}
@@ -43,27 +42,20 @@ class Hash {
 	}
 	void digest(char * a) {
 		if(size > 0) {
-			hash.Update((uint8_t*)buffer, size);
-			//SHA1_Update(&hash, (char*)buffer, size);
+			SHA256_Update(&hash, (char*)buffer, size);
 			size=0;
 		}
-		//SHA1_Final((unsigned char *)a, &hash);
-		hash.Final((uint8_t*)a);
+		SHA256_Final((unsigned char *)a, &hash);
 	}
 	void reset() {
-		//SHA1_Init(&hash);
-		hash.Reset();
+		SHA256_Init(&hash);
 		size=0;
 	}
 	static void hash_once(void * digest, const void * data, int nbyte) {
-		using namespace osuCrypto;
-		SHA1 sha;
-		sha.Update((u8*)data, nbyte);
-		sha.Final((u8*)digest);
-		//(void )SHA1((const unsigned char *)data, nbyte, (unsigned char *)digest);
+		(void )SHA256((const unsigned char *)data, nbyte, (unsigned char *)digest);
 	}
 	static block hash_for_block(const void * data, int nbyte) {
-		char digest[20];
+		char digest[DIGEST_SIZE];
 		hash_once(digest, data, nbyte);
 		return _mm_load_si128((__m128i*)&digest[0]);
 	}
@@ -76,5 +68,7 @@ class Hash {
 		}
 	}
 };
+}
 /**@}*/
 #endif// HASH_H__
+#endif//OT_NP_USE_MIRACL

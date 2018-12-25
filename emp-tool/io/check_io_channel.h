@@ -2,15 +2,14 @@
 #define CHECK_IO_CHANNEL_H__
 #include <iostream>
 #include <string>
-#include "net_io_channel.h"
-using namespace std;
-
+#include "emp-tool/io/net_io_channel.h"
+#include <cassert>
 /** @addtogroup IO
     @{
   */
   
-
-class CheckIO: public IOChannel<CheckIO> { public:
+namespace emp {
+class CheckIO: public IOChannel { public:
 	NetIO * netio;
 	bool check_result = true;
 	char * buffer = nullptr;
@@ -34,9 +33,10 @@ class CheckIO: public IOChannel<CheckIO> { public:
 	}
 
 
-	void recv_data_impl(void  * data, int len) {
+	int recv_data(void  * data, int len) {
+		return len;
 	}
-	void send_data_impl(const void * data, int len) {
+	int send_data(const void * data, int len) {
 		assert(len < CHECK_BUFFER_SIZE);
 		if(check_size + len >= CHECK_BUFFER_SIZE) {
 			netio->recv_data(net_buffer, check_size);
@@ -45,7 +45,10 @@ class CheckIO: public IOChannel<CheckIO> { public:
 		}
 		memcpy(buffer+check_size, data, len);
 		check_size += len;
+
+		return len;
 	}
 };
+}
 /**@}*/
 #endif//CHECK_IO_CHANNEL

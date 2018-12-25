@@ -1,13 +1,14 @@
 #ifndef COM_H__
 #define COM_H__
-#include "string.h"
+#include <string.h>
 #include "emp-tool/utils/hash.h"
 #include "emp-tool/utils/prg.h"
 /** @addtogroup BP
     @{
   */
 
-typedef char Com[20];
+namespace emp {
+typedef char Com[Hash::DIGEST_SIZE];
 typedef block Decom[1];
 
 class Commitment{ public:
@@ -30,5 +31,6 @@ class Commitment{ public:
 		return strncmp(com, res, Hash::DIGEST_SIZE)==0;
 	}
 };
+}
 /**@}*/
 #endif// COM_H__

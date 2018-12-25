@@ -1,20 +1,18 @@
-#include <emp-tool.h>
-
-using std::string;
-
+#include "emp-tool/emp-tool.h"
+using namespace emp;
 void ham(int n) {
 	Integer a(n, 0, ALICE);
 	Integer b(n, 0, BOB);
 	Integer c = a^b;
 	Integer d = c.hamming_weight();
-	d.reveal<string>();
+	d.reveal_string();
 }
 
 void mult(int n) {
 	Integer a(n, 0, ALICE);
 	Integer b(n, 0, BOB);
 	Integer c = a*b;
-	c.reveal<string>();
+	c.reveal_string();
 }
 void modexp(int n1, int n2) {
 	Integer a(n1, 0,  ALICE);
@@ -33,13 +31,12 @@ void sort(int n) {
 		A[i] = A[i] ^ B[i];
 	sort(A, n);
 	for(int i = 0; i < n; ++i)
-		A[i].reveal<string>();
+		A[i].reveal_string();
 }
 int main(int argc, char** argv) {
-	setup_circuit_generator(true, "sort");
-//	sort(1024*4);	
+	setup_plain_prot(true, "sort.txt");
+	sort(128);	
 //	mult(2048);
-	ham(1<<10);
-	finalize_circuit_generator();
-    std::cout << "passed" << std::endl;
+//	ham(1<<10);
+	finalize_plain_prot ();
 }

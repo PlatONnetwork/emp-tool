@@ -1,11 +1,12 @@
 #ifndef XORTREE_H__
 #define XORTREE_H__
-#include "emp-tool/circuits/bit.h"
+#include "bit.h"
 /** @addtogroup BP
     @{
   */
 
 //TODO: hardcoded with ssp=40, should at least support a range a ssp's
+namespace emp {
 template<int N=232, int M=232>
 class XorTree{public:
 	int n, ssp;
@@ -70,16 +71,26 @@ class XorTree{public:
 		return n;
 	}
 
-	void gen(bool * out, bool * in, const block& seed) {
-		PRG prg(seed);int i;
+	void gen(bool * out, bool * in, PRG * prg = nullptr) {
+		bool prg_provided = true;
+		if (prg == nullptr) {
+			prg = new PRG();
+			prg_provided = false;
+		}
+		int i;
 		for(i = 0; i < n/N; ++i) {
-			genN(out+(i*(N+M)), in+N*i, &prg, N);
+			genN(out+(i*(N+M)), in+N*i, prg, N);
 		}
 		if(n%N != 0) {
-			genN(out+(i*(N+M)) , in+N*i, &prg, n%N);
+			genN(out+(i*(N+M)) , in+N*i, prg, n%N);
+		}
+		if(not prg_provided) {
+			delete prg;
+			prg = nullptr;
 		}
 	}
 };
 /**@}*/
+}
 #endif
 
