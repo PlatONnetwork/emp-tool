@@ -1,9 +1,92 @@
-#include <chrono>
+template<class... Ts>
+void run_function(void *function, const Ts&... args) {	
+	reinterpret_cast<void(*)(Ts...)>(function)(args...);
+}
 
-static const char* hex_char_to_bin(char c)
-{
-	switch(toupper(c))
-	{
+template<typename T>
+void inline delete_array_null(T * ptr){
+	if(ptr != nullptr) {
+		delete[] ptr;
+		ptr = nullptr;
+	}
+}
+
+template <typename T>
+std::string m128i_to_string(const __m128i var) {
+	std::stringstream sstr;
+	const T* values = (const T*) &var;
+	for (unsigned int i = 0; i < sizeof(__m128i) / sizeof(T); i++) {
+		sstr <<"0x"<<std::hex<< values[i] << " ";
+	}
+	return sstr.str();
+}
+
+inline time_point<high_resolution_clock> clock_start() { 
+	return high_resolution_clock::now();
+}
+
+inline double time_from(const time_point<high_resolution_clock>& s) {
+	return std::chrono::duration_cast<std::chrono::microseconds>(high_resolution_clock::now() - s).count();
+}
+
+inline string bin_to_dec(const string& bin2) {
+	if(bin2[0] == '0')
+		return change_base(bin2, 2, 10);
+	string bin = bin2;
+	bin[0] = '0';
+	bool flip = false;
+	for(int i = bin.size()-1; i>=1; --i) {
+		if(flip)
+			bin[i] = (bin[i] == '1' ? '0': '1');
+		if(bin[i] == '1')
+			flip = true;
+	}
+	return "-"+change_base(bin, 2, 10);
+}
+
+inline string dec_to_bin(const string& dec) {
+	string bin = change_base(dec, 10, 2);
+	if(dec[0] != '-')
+		return '0' + bin;
+	bin[0] = '1';
+	bool flip = false;
+	for(int i = bin.size()-1; i>=1; --i) {
+		if(flip)
+			bin[i] = (bin[i] == '1' ? '0': '1');
+		if(bin[i] == '1')
+			flip = true;
+	}
+	return bin;
+}
+
+
+inline string change_base(string str, int old_base, int new_base) {
+#if defined(_WIN32) && defined(OT_NP_USE_MIRACL)
+	//use miracl
+	//fprintf(stderr, "change_base: %s, old: %d, new: %d \n", str.data(), old_base, new_base);
+	return transfer_base(str, old_base, new_base);
+#else
+	mpz_t tmp;
+	mpz_init_set_str (tmp, str.c_str(), old_base);
+	char * b = new char[mpz_sizeinbase(tmp, new_base) + 2];
+	mpz_get_str(b, new_base, tmp);
+	mpz_clear(tmp);
+	string res(b);
+	delete[]b;
+	return res;
+#endif//
+}
+
+inline void error(const char * s, int line, const char * file) {
+	fprintf(stderr, s, "\n");
+	if(file != nullptr) {
+		fprintf(stderr, "at %d, %s\n", line, file);
+	}
+	exit(1);
+}
+
+inline const char* hex_char_to_bin(char c) {
+	switch(toupper(c)) {
 		case '0': return "0000";
 		case '1': return "0001";
 		case '2': return "0010";
@@ -31,11 +114,8 @@ inline std::string hex_to_binary(std::string hex) {
 	return bin;
 }
 inline void parse_party_and_port(char ** arg, int argc, int * party, int * port) {
-    if (argc == 1)
-    {
-        std::cout << "ERROR: argc = 1, need two argsm party ID {1,2} and port." << std::endl;
-        std::terminate();
-    }
+	if (argc == 1)
+		error("ERROR: argc = 1, need two argsm party ID {1,2} and port.");
 	*party = atoi (arg[1]);
 	*port = atoi (arg[2]);
 }
@@ -46,22 +126,6 @@ inline std::string Party(int p) {
 	else if (p == BOB)
 		return "BOB";
 	else return "PUBLIC";
-}
-
-inline uint64_t timeStamp() {
-	//struct timespec t;
-	//clock_gettime(CLOCK_REALTIME,&t);
-	//return (t.tv_sec*1000*1000+t.tv_nsec/1000);
-	auto now = std::chrono::system_clock::now();
-	return std::chrono::time_point_cast<std::chrono::microseconds>(now).time_since_epoch().count();
-
-}
-inline double wallClock() {
-	//struct timespec t;
-	//clock_gettime(CLOCK_REALTIME,&t);
-	//return t.tv_sec+1e-9*t.tv_nsec;
-	auto now = std::chrono::system_clock::now();
-	return static_cast<double>(std::chrono::time_point_cast<std::chrono::nanoseconds>(now).time_since_epoch().count());
 }
 
 template<typename t>
