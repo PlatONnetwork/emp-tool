@@ -50,7 +50,6 @@ class PRG { public:
 			//_rdseed64_step(&r0);
 			//_rdseed64_step(&r1);
 
-            printf("use rdseed64, to make block \n\n");
 			v = makeBlock(r0, r1);
 #endif
 			reseed(&v);
