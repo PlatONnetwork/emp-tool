@@ -127,6 +127,10 @@ install(DIRECTORY cmake/ DESTINATION cmake/)
 # emp test macro
 macro (emp_test _name)
 	message(STATUS "emp tool test: ${_name}")
+	if (WIN32)
+		ADD_DEFINITIONS(-DEMP_MPC_STATIC=1)
+	endif()
+
     #aux_source_directory(./testutils EXE_SRC_LIST)
     add_executable(emp_tool_${_name} ./test/${_name}.cpp)
     
@@ -139,11 +143,15 @@ macro (emp_test _name)
         endif()
    	else()
    		message(STATUS "the link libarary: ${NAME} , the target exe name: ${_name}")
-   		target_link_libraries(emp_tool_${_name} ${NAME} ${OPENSSL_LIBRARIES} ${RELIC_LIBRARIES} ${GMP_LIBRARIES} ${LIB_PROTOBUF})
+		if (NOT WIN32)
+   			target_link_libraries(emp_tool_${_name} ${NAME} ${OPENSSL_LIBRARIES} ${RELIC_LIBRARIES} ${GMP_LIBRARIES} ${LIB_PROTOBUF})
+		else()	
+			target_link_libraries(emp_tool_${_name} ${OPENSSL_LIBRARIES} ${LIB_PROTOBUF} miracl emp-tool_static)
+		endif()
    	endif()
 
     #link_libraries(${GMP_LIBRARIES} ${LIB_PROTOBUF})
-    SET_TARGET_PROPERTIES(emp_tool_${_name} PROPERTIES FOLDER "emp_tool_test")
+    SET_TARGET_PROPERTIES(emp_tool_${_name} PROPERTIES FOLDER "emp-toolkit-test")
     
     #INSTALL(TARGETS ${_name} RUNTIME DESTINATION ${CMAKE_PREFIX_PATH}/bin)
 endmacro()

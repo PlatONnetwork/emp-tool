@@ -4,6 +4,7 @@
 #include "emp-tool/utils/block_utils.h"
 #include "emp-tool/garble/garble_aes.h"
 #include "constants.h"
+#include "emp-tool/utils/sse.h"
 #include <random>
 
 #ifndef OT_NP_USE_MIRACL
@@ -56,7 +57,7 @@ class PRG { public:
 		}
 	}
 	void reseed(const void * key, uint64_t id = 0) {
-		block v = juzix__mm_loadu_si128((block*)key);
+		block v = juzix_mm_loadu_si128((block*)key);
 		v = xorBlocks(v, makeBlock(0LL, id));
 		AES_set_encrypt_key(v, &aes);
 		counter = 0;
