@@ -1,0 +1,13 @@
+LIBRARY emp-tool
+EXPORTS
+
+SM2_Init
+SM2_UnInit
+SM2_load
+SM2_unload
+otnp_init
+otnp_uninit
+otnp_send
+otnp_recv
+bool_to128
+juzix_func_mm_testz_si128

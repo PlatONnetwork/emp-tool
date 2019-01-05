@@ -15,7 +15,7 @@ namespace emp {
 	}
 
 	void Batcher::make_semi_honest(int party, ProtocolExecution * be /* = nullptr */) {
-		if (be == nullptr && ProtocolExecutionProxy::prot_exec.prot_exec_ == nullptr)
+		if (be == nullptr && ProtocolExecutionProxy::prot_exec.getProtocolExecution() == nullptr)
 			return;
 
 		if (be != nullptr)

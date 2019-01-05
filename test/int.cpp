@@ -1,5 +1,6 @@
 #include <typeinfo>
 #include "emp-tool/emp-tool.h"
+#include <cassert>
 #include <iostream>
 using namespace std;
 using namespace emp;

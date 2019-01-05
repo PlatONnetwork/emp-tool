@@ -1,11 +1,16 @@
 #include <typeinfo>
-#include "emp-tool/emp-tool.h"
 #include <iostream>
+#include <algorithm>
+#include <cassert>
+#include <functional>
+#include "float_circuit.h"
+#include "emp-tool/execution/plain_prot.h"
+
 using namespace std;
 using namespace emp;
 
 bool accurate(double a, double b, double err) {
-	if (fabs(a - b) < err*a and fabs(a - b) < err*b)
+	if (fabs(a - b) < err*a && fabs(a - b) < err*b)
 		return true;
 	else return false;
 }
@@ -18,7 +23,7 @@ void test_float(double precision, int runs = 1000) {
 		prg.random_data(&ib, 8);
 		double da = ia / 1000.0;
 		double db = ib / 1000.0;
-		while( not accurate(Op()((float)da, (float)db),  Op()(da, db), precision )) {
+		while(! accurate(Op()((float)da, (float)db),  Op()(da, db), precision )) {
 			prg.random_data(&ia, 8);
 			prg.random_data(&ib, 8);
 			da = ia / 1000.0;

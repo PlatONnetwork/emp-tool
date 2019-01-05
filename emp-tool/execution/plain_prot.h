@@ -1,6 +1,9 @@
 #ifndef PLAIN_ENV_H__
 #define PLAIN_ENV_H__
-#include "emp-tool/emp-tool.h"
+
+#include <vector>
+#include "emp-tool/execution/protocol_execution.h"
+#include "emp-tool/execution/plain_circ.h"
 #ifdef OT_NP_USE_MIRACL
 #include "emp-tool/utils/sm2_params.h"
 #else
@@ -19,10 +22,10 @@ public:
 	bool print;
 	string filename;
 	PlainCircExec * cast_circ_exec;
-	vector<int64_t>output_vec;
+	std::vector<int64_t>output_vec;
 	PlainProt(bool _print, string _filename) : print(_print), 
 	filename(_filename) {
-	 cast_circ_exec = static_cast<PlainCircExec *> (CircuitExecutionProxy::circ_exec.circ_exec_);
+	 cast_circ_exec = static_cast<PlainCircExec *> (CircuitExecutionProxy::circ_exec.getCircuitExecution());
 	}
 
 	void finalize() {
@@ -64,20 +67,17 @@ inline void setup_plain_prot(bool print, string filename) {
 }
 
 inline void finalize_plain_prot () {
-	PlainCircExec * cast_circ_exec = static_cast<PlainCircExec *> (CircuitExecutionProxy::circ_exec.circ_exec_);
-	PlainProt * cast_prot_exec = static_cast<PlainProt*> (ProtocolExecutionProxy::prot_exec.prot_exec_);
+	PlainCircExec * cast_circ_exec = static_cast<PlainCircExec *> (CircuitExecutionProxy::circ_exec.getCircuitExecution());
+	PlainProt * cast_prot_exec = static_cast<PlainProt*> (ProtocolExecutionProxy::prot_exec.getProtocolExecution());
 	int64_t z_index = cast_circ_exec->gid++;
 	cast_circ_exec->fout<<2<<" "<<1<<" "<<0<<" "<<0<<" "<<z_index<<" XOR"<<endl;
 	for (auto v : cast_prot_exec->output_vec) {
 		cast_circ_exec->fout<<2<<" "<<1<<" "<<z_index<<" "<<v<<" "<<cast_circ_exec->gid++<<" XOR"<<endl;
 	}
 	cast_circ_exec->gates += (1+cast_prot_exec->output_vec.size());
-	//cast_circ_exec->finalize();
 
 	ProtocolExecutionProxy::prot_exec.finalize();
 	CircuitExecutionProxy::circ_exec.finalize();
-	//delete PlainCircExec::circ_exec;
-	//delete ProtocolExecutionProxy::prot_exec;
 }
 }
 #endif 

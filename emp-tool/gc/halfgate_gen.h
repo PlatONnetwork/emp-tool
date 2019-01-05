@@ -36,8 +36,14 @@ class HalfGateGen:public CircuitExecution { public:
 		return b? one_block() : zero_block();
 	}
 	bool isDelta(const block & b) {
+#ifdef _WIN32
+		block del = delta;
+		__m128i neq = juzix_mm_xor_si128(b, del);
+		return juzix_mm_testz_si128(neq, neq);
+#else
 		__m128i neq = _mm_xor_si128(b, delta);
 		return _mm_testz_si128(neq, neq);
+#endif//
 	}
 
 	block and_gate(const block& a, const block& b) override {

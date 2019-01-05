@@ -11,7 +11,6 @@
 
 #include "emp-tool/utils/prg.h"
 #include "emp-tool/utils/block_utils.h"
-//#include "platon_logger.h"
 #include "emp-tool/utils/prg.h"
 #include <chrono>
 
@@ -30,45 +29,6 @@ namespace emp
 				delete (PRG*)prg;
 		}
 
-		// int IOChannel::send_data(const void * data, int nbyte)
-		// {
-		// 	//LOGE("send data size: %d start...", nbyte);
-		// 	auto startTime = std::chrono::high_resolution_clock::now();
-		// 	int ret = send_data_impl(data, nbyte);
-		// 	std::chrono::duration<int64_t, std::micro> costTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - startTime);
-		// 	//LOGE("send data size: %d end, cost time: %d.", nbyte, costTime.count());
-		// 	io_sent_cost_time += costTime.count();
-		// 	io_sent_bytes += nbyte;
-		// 	if (ret != nbyte)
-		// 	{
-		// 		LOGW("send data exception, network error or connection closed . ret=%d", ret);
-		// 		io_state = ret;
-		// 		return -1;
-		// 	}
-
-		// 	++io_sent_count;
-		// 	return 0;
-		// }
-
-		// int IOChannel::recv_data(void * data, int nbyte)
-		// {
-		// 	//LOGE("recv data size: %d start...", nbyte);
-		// 	auto startTime = std::chrono::high_resolution_clock::now();
-		// 	int ret = recv_data_impl(data, nbyte);
-		// 	std::chrono::duration<int64_t, std::micro> costTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - startTime);
-		// 	//LOGE("recv data size: %d end, cost time: %d", nbyte, costTime.count());
-		// 	io_recv_cost_time += costTime.count();
-		// 	io_recv_bytes += nbyte;
-		// 	if (ret != nbyte)
-		// 	{
-		// 		LOGW("recv data exception, network error or connection closed . ret=%d", ret);
-		// 		io_state = ret;
-		// 		return -1;
-		// 	}
-
-		// 	++io_recv_count;
-		// 	return 0;
-		// }
 
 		int IOChannel::send_block(const block* data, int nblock)
 		{
@@ -157,50 +117,6 @@ namespace emp
 
 			return 0;
 		}
-
-		//int IOChannel::send_ep(epoint **ep, int num) 
-		//{
-		//	uint8_t buffer[64];
-		//	int ep_size = EP_SIZES;
-		//	
-		//	int ret = -1;
-		//	for(int i = 0; i < num; ++i)
-		//	{
-		//	    point_to_bytes(buffer, *(ep + i));
-		//		if ((ret = send_data(&ep_size, sizeof(ep_size))) != 0)
-		//			return -1;
-		//
-		//		if ((ret = send_data(buffer, ep_size * sizeof(uint8_t))) != 0)
-		//			return -1;
-		//	}
-		//
-		//	return 0;
-		//}
-		//
-		//int IOChannel::recv_ep(epoint **ep, int num)
-		//{
-		//	int recvBytes = 0;
-		//	uint8_t buffer[64];
-		//    int recv_size = 0;
-		//
-		//	int ret = 0;
-		//	//1. recv epoint count
-		//	//2. recv a epoint: 2.1. recv size, 2.2. recv epoint bytes
-		//	for(int i = 0; i < num; ++i)
-		//	{
-		//		ret = recv_data(&recv_size, sizeof(int));
-		//		if (ret != 0)
-		//			return -1;
-		//
-		//		ret = recv_data(buffer, recv_size * sizeof(uint8_t));
-		//		if (ret != 0)
-		//			return -1;
-		//
-		//		bytes_to_point(*(ep + i), buffer, recv_size);
-		//	}
-		//
-		//	return 0;
-		//}
 
 #ifndef OT_NP_USE_MIRACL
 		int IOChannel::send_eb(const void * eb, size_t num)
@@ -473,6 +389,5 @@ namespace emp
 #endif//OT_NP_USE_MIRACL
 
 }//emp
-
 
 

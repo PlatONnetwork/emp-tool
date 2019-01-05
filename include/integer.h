@@ -14,7 +14,7 @@ using std::vector;
 namespace emp {
 class EMP_MPC_DLL_API Integer : public Swappable<Integer>, public Comparable<Integer> { public:
 	int length = 0;
-	Bit* bits = nullptr;
+    Bit* bits = nullptr;
 
 	Integer(Integer&& in);
 	Integer(const Integer& in);

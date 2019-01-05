@@ -1,5 +1,16 @@
-#include "emp-tool/emp-tool.h"
+#include "emp-tool/execution/circuit_execution.h"
+#include "emp-tool/io/net_io_channel.h"
+#include "emp-tool/utils/utils.h"
+#include "emp-tool/utils/prg.h"
+#include "emp-tool/circuits/circuit_file.h"
+#include "emp-tool/gc/garble_circuit.h"
+#include "emp-tool/io/abandon_io_channel.h"
+#include "emp-tool/io/mem_io_channel.h"
+#include "emp-tool/gc/halfgate_eva.h"
+#include "emp-tool/gc/halfgate_gen.h"
 #include <iostream>
+
+
 using namespace std;
 using namespace emp;
 
