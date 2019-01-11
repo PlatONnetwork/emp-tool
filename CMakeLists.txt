@@ -96,9 +96,15 @@ aux_source_directory(./inlcude  SRC_LIST)
 
 
 ## dynamic
-#if(NOT WIN32)
+if(NOT WIN32)
+	add_library(${NAME} SHARED ${SRC_LIST})
+else()
 	add_library(${NAME} SHARED ${SRC_LIST} ${CMAKE_CURRENT_SOURCE_DIR}/include/emp-tool.def)
-#endif()
+endif()
+
+if(NOT WIN32)
+    INSTALL(TARGETS ${NAME} LIBRARY DESTINATION lib)
+endif()
 
 if(WIN32)
     target_compile_options(${NAME} PRIVATE /D "EMP_MPC_EXPORTS")
@@ -108,6 +114,7 @@ endif()
 SET_TARGET_PROPERTIES(${NAME} PROPERTIES
     OUTPUT_NAME ${NAME}
     FOLDER "emp-tool"
+	VERSION ${SO_VERSION}
     )
 
 # static
@@ -121,6 +128,7 @@ endif()
 SET_TARGET_PROPERTIES(${NAME}_static PROPERTIES
     OUTPUT_NAME ${NAME}_static
     FOLDER ${NAME}
+	VERSION ${SO_VERSION}
 )
 
 # installation
