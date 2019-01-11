@@ -25,7 +25,7 @@ public:
 	std::vector<int64_t>output_vec;
 	PlainProt(bool _print, string _filename) : print(_print), 
 	filename(_filename) {
-	 cast_circ_exec = static_cast<PlainCircExec *> (CircuitExecutionProxy::circ_exec.getCircuitExecution());
+	 cast_circ_exec = static_cast<PlainCircExec *> (CircuitExecutionProxy::getCircuitExecution());
 	}
 
 	void finalize() {
@@ -62,13 +62,13 @@ inline void setup_plain_prot(bool print, string filename) {
 	initialize_relic();
 #endif//
 	
-	CircuitExecutionProxy::circ_exec.setup(new PlainCircExec(print, filename));
-	ProtocolExecutionProxy::prot_exec.setup(new PlainProt(print, filename));
+	CircuitExecutionProxy::setup(new PlainCircExec(print, filename));
+	ProtocolExecutionProxy::setup(new PlainProt(print, filename));
 }
 
 inline void finalize_plain_prot () {
-	PlainCircExec * cast_circ_exec = static_cast<PlainCircExec *> (CircuitExecutionProxy::circ_exec.getCircuitExecution());
-	PlainProt * cast_prot_exec = static_cast<PlainProt*> (ProtocolExecutionProxy::prot_exec.getProtocolExecution());
+	PlainCircExec * cast_circ_exec = static_cast<PlainCircExec *> (CircuitExecutionProxy::getCircuitExecution());
+	PlainProt * cast_prot_exec = static_cast<PlainProt*> (ProtocolExecutionProxy::getProtocolExecution());
 	int64_t z_index = cast_circ_exec->gid++;
 	cast_circ_exec->fout<<2<<" "<<1<<" "<<0<<" "<<0<<" "<<z_index<<" XOR"<<endl;
 	for (auto v : cast_prot_exec->output_vec) {
@@ -76,8 +76,8 @@ inline void finalize_plain_prot () {
 	}
 	cast_circ_exec->gates += (1+cast_prot_exec->output_vec.size());
 
-	ProtocolExecutionProxy::prot_exec.finalize();
-	CircuitExecutionProxy::circ_exec.finalize();
+	ProtocolExecutionProxy::finalize();
+	CircuitExecutionProxy::finalize();
 }
 }
 #endif 

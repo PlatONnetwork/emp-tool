@@ -108,7 +108,7 @@ const Bit &Integer::operator[](int index) const {
 
 string Integer::reveal_string(int party) const {
 	bool * b = new bool[length];
-	ProtocolExecutionProxy::prot_exec.reveal(b, party, (block *)bits,  length);
+	ProtocolExecutionProxy::reveal(b, party, (block *)bits,  length);
 	string bin="";
 	for(int i = length-1; i >= 0; --i)
 		bin += (b[i]? '1':'0');

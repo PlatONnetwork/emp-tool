@@ -1,21 +1,17 @@
 #ifndef CIRCUIT_EXECUTION_H__
 #define CIRCUIT_EXECUTION_H__
 #include "block.h"
+#include "emp-tool/utils/block_utils.h"
 #include "constants.h"
+#include <stdio.h>
 
 #ifdef _WIN32
 #include <windows.h>
-#include <memory>
+#else
+#include <pthread.h>
 #endif
 
 namespace emp {
-
-#ifndef _WIN32
-		#define _EMP_CIR_PD_  CircuitExecution *circ
-#else	
-		#define _EMP_CIR_PD_
-#endif
-
 
 		enum RTCktOpt { on, off };
 
@@ -33,82 +29,35 @@ namespace emp {
 
 		class EMP_MPC_DLL_API CircuitExecutionProxy
 		{
-		public:
-			//Note: we only support thread_local variables at present, together with proxy CircuitExecution object in heap, so object could auto released in desctruction
-#ifndef _WIN32
-            static thread_local CircuitExecutionProxy circ_exec;
+		//Note: we only support thread_local variables at present, together with proxy CircuitExecution object in heap, so object could auto released in desctruction
+		private://
+			static CircuitExecutionProxy circ_exec_;
 
-			CircuitExecution* circ_exec_ = nullptr;//only reference, not manage the object
+		#ifdef _WIN32
+		    static DWORD cir_proxy_key_;
+		#else
+		    static pthread_key_t cir_proxy_key_;
+		#endif//
 
-			CircuitExecution* getCircuitExecution()
-		    {
-		        return circ_exec_;
-		    }
-
-			CircuitExecutionProxy() {}
-			~CircuitExecutionProxy() {
-				finalize();
-			}
-			
-			void setup(CircuitExecution* cuicuit_exec)
-			{
-				if (circ_exec_)//in case of memory leak
-				{
-					delete circ_exec_;
-					circ_exec_ = nullptr;
-				}
-
-				circ_exec_ = cuicuit_exec;
-			}
-
-			void finalize()
-			{
-				if (circ_exec_)
-				{
-					delete circ_exec_;
-					circ_exec_ = nullptr;
-				}
-			}
-
-			block and_gate(const block& in1, const block& in2)
-			{
-				return circ_exec_->and_gate(in1, in2);
-			}
-
-			block xor_gate(const block&in1, const block&in2)
-			{
-				return circ_exec_->xor_gate(in1, in2);
-			}
-
-			block not_gate(const block& in1)
-			{
-				return circ_exec_->not_gate(in1);
-			}
-
-			block public_label(bool b)
-			{
-				return circ_exec_->public_label(b);
-			}
-#else//windows
-			
-		private:
-		    //static bool is_loaded;
-		    //static std::mutex lck;
-		    static DWORD cir_proxy_key;
-
-		   // bool is_setup = false;
 		    static void cir_global_init()
 		    {
-		        cir_proxy_key = TlsAlloc();
+		  	#ifdef _WIN32
+		        cir_proxy_key_ = TlsAlloc();
+		    #else
+		        pthread_key_create(&cir_proxy_key_,(void(*)(void *))NULL);
+		    #endif
 		    }
 
 		    static void cir_global_uninit()
 		    {
-		        TlsFree(cir_proxy_key);
+		    #ifdef _WIN32
+		        TlsFree(cir_proxy_key_);
+		    #else
+		        pthread_key_delete(cir_proxy_key_);
+		    #endif
 		    }
 
 		public:
-			static CircuitExecutionProxy circ_exec;
 		    CircuitExecutionProxy() {
 		    	cir_global_init();
 		    }
@@ -120,80 +69,109 @@ namespace emp {
 
 		    static CircuitExecution* getCircuitExecution()
 		    {
-		        LPVOID lret = TlsGetValue(cir_proxy_key);
+		     #ifdef _WIN32
+		        LPVOID lret = TlsGetValue(cir_proxy_key_);
+		     #else
+		        void* lret = pthread_getspecific(cir_proxy_key_);
+		     #endif
 				if (lret != 0)
 					return (CircuitExecution*)lret;
 				else
 				{
-					printf("nullptr for circ_exec !\n");
+					printf("nullptr for circ_exec_ !\n");
 					return nullptr;
 				}
 		    }
-            
-			//CircuitExecution* circ_exec_ = nullptr;//only reference, not manage the object
 
-			static void setup(CircuitExecution* cuicuit_exec)
+			static void setup(CircuitExecution* circuit_exe)
 			{
-				LPVOID lret = TlsGetValue(cir_proxy_key);
-				if ((lret == 0 && GetLastError() == ERROR_SUCCESS) || lret != 0)
-				{
-					TlsSetValue(cir_proxy_key, cuicuit_exec);
-				}
-				else
-					printf("error in setup CircuitExecution, %d\n", GetLastError());
+			#ifdef _WIN32
+				TlsSetValue(cir_proxy_key_, circuit_exe);
+			#else
+				pthread_setspecific(cir_proxy_key_, circuit_exe);
+			#endif
 			}
 
 			static void finalize()
 			{
-				LPVOID lret = TlsGetValue(cir_proxy_key);
+			#ifdef _WIN32
+				LPVOID lret = TlsGetValue(cir_proxy_key_);
 				if (lret != 0)
 				{
-					TlsSetValue(cir_proxy_key, nullptr);
+					delete (CircuitExecution*)lret;
+					TlsSetValue(cir_proxy_key_, nullptr);
+				}
+			#else
+				void* lret = pthread_getspecific(cir_proxy_key_);
+				if (lret != NULL)
+				{
+					delete (CircuitExecution*)lret;
+					pthread_setspecific(cir_proxy_key_, NULL);
+				}
+			#endif
+			}
+
+			static block and_gate(const block& in1, const block& in2)
+			{
+				CircuitExecution* ptr = getCircuitExecution();
+				if (ptr != nullptr)
+				{
+					return getCircuitExecution()->and_gate(in1, in2);
+				}	
+				else
+				{
+					printf("error, not setup protocol_execution !\n");
+					return zero_block();
 				}
 			}
 
-			block and_gate(const block& in1, const block& in2)
+			static block xor_gate(const block& in1, const block& in2)
 			{
-				return getCircuitExecution()->and_gate(in1, in2);
+				CircuitExecution* ptr = getCircuitExecution();
+				if (ptr != nullptr)
+				{
+					return getCircuitExecution()->xor_gate(in1, in2);
+				}
+				else
+				{
+					printf("error, not setup protocol_execution !\n");
+					return zero_block();
+				}
 			}
 
-			block xor_gate(const block&in1, const block&in2)
+			static block not_gate(const block& in1)
 			{
-				return getCircuitExecution()->xor_gate(in1, in2);
+				CircuitExecution* ptr = getCircuitExecution();
+				if (ptr != nullptr)
+				{
+					return ptr->not_gate(in1);
+				}
+				else
+				{
+					printf("error, not setup protocol_execution !\n");
+					return zero_block();
+				}
 			}
 
-			block not_gate(const block& in1)
+			static block public_label(bool b)
 			{
-				return getCircuitExecution()->not_gate(in1);
+				CircuitExecution* ptr = getCircuitExecution();
+				if (ptr != nullptr)
+				{
+					return ptr->public_label(b);
+				}
+				else
+				{
+					printf("error, not setup protocol_execution !\n");
+					return zero_block();
+				}
 			}
-
-			block public_label(bool b)
-			{
-				return getCircuitExecution()->public_label(b);
-			}
-#endif//
-
 
 			// block delta()
 			// {
 			// 	return circ_exec_->delta();
-			// }
-				
-		};
+			// }		
+};
 
-// class CircuitExecution { 
-// public:
-// #ifndef THREADING
-// 	static CircuitExecution * circ_exec;//NOte: if we use non-thread_local varia
-// #else
-// 	static __thread CircuitExecution * circ_exec;
-// #endif
-// 	virtual block and_gate(const block& in1, const block& in2) = 0;
-// 	virtual block xor_gate(const block&in1, const block&in2) = 0;
-// 	virtual block not_gate(const block& in1) = 0;
-// 	virtual block public_label(bool b) = 0;
-// 	virtual ~CircuitExecution (){ }
-// };
-// enum RTCktOpt{on, off};
-}
+}//emp
 #endif

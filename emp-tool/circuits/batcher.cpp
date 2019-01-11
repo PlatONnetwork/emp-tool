@@ -15,16 +15,16 @@ namespace emp {
 	}
 
 	void Batcher::make_semi_honest(int party, ProtocolExecution * be /* = nullptr */) {
-		if (be == nullptr && ProtocolExecutionProxy::prot_exec.getProtocolExecution() == nullptr)
+		if (be == nullptr && ProtocolExecutionProxy::getProtocolExecution() == nullptr)
 			return;
 
 		if (be != nullptr)
-			ProtocolExecutionProxy::prot_exec.setup(be);
+			ProtocolExecutionProxy::setup(be);
 		
 		bool * bools = new bool[size()];
 		to_bool(bools);
 		label_ptr = labels = new block[size()];
-		ProtocolExecutionProxy::prot_exec.feed(labels, party, bools, size());
+		ProtocolExecutionProxy::getProtocolExecution()->feed(labels, party, bools, size());
 		len_ptr = 0;
 		delete[] bools;
 	}

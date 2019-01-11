@@ -84,7 +84,7 @@ namespace emp
 
 		bool isOne(const block * b) {
 			//block neq = juzix_mm_xor_si128(*b, one_block());
-			block neq = juzix_mm_xor_si128(*b, _mm_set_epi64x(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL));
+			block neq = juzix_mm_xor_si128(*b, juzix_mm_set_epi64x(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL));
 //#ifdef WIN32
 			return juzix_mm_testz_si128(neq, neq) > 0;
 //#else

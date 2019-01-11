@@ -61,7 +61,7 @@ class HalfGateGen:public CircuitExecution { public:
 			return out[0];
 		}
 	}
-	block xor_gate(const block&a, const block& b) override {
+	block xor_gate(const block& a, const block& b) override {
 		if(isOne(&a))
 			return not_gate(b);
 		else if (isOne(&b))
@@ -80,7 +80,7 @@ class HalfGateGen:public CircuitExecution { public:
 				return res;//xorBlocks(a, b);
 		}
 	}
-	block not_gate(const block&a) override {
+	block not_gate(const block& a) override {
 		if (isZero(&a))
 			return one_block();
 		else if (isOne(&a))
