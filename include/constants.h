@@ -17,6 +17,8 @@ const static int BOB = 2;
 #endif
 }
 
+// for ir compiler "plang", must define EMP_MPC_DLL_API as empty
+#ifdef EMP_USE_DLL_API_AS_MODULE
 #ifdef _WIN32
 #  if defined(EMP_MPC_STATIC)
 #    define EMP_MPC_DLL_API 
@@ -27,6 +29,9 @@ const static int BOB = 2;
 #      define EMP_MPC_DLL_API __declspec(dllimport)
 #    endif
 #  endif
+#else
+#  define EMP_MPC_DLL_API 
+#endif
 #else
 #  define EMP_MPC_DLL_API 
 #endif

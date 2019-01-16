@@ -122,6 +122,10 @@ int64_t Integer::reveal(int party) const {
 	return stoll(s);
 }
 
+int64_t Integer::reveal_int(int party) const { 
+    return reveal(party); 
+}
+
 uint64_t Integer::reveal_uint(int party) const {
 	Integer tmp = *this;
 	tmp.resize(tmp.size()+1, false);
