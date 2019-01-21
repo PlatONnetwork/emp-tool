@@ -45,13 +45,13 @@ namespace emp
 
 			int recv_bn(void* bn, size_t num);
 #else//miracl
-			int send_ep(void **ep, int num);
+			void send_ep(void *ep, size_t num);
 
-			int recv_ep(void **ep, int num);
+			void recv_ep(void *ep, size_t num);
 
-			int send_bn(const void* bn, int num);
+			void send_bn(const void* bn, size_t num);
 
-			int recv_bn(void* bn, int num);
+			void recv_bn(void* bn, size_t num);
 #endif//JUZIX_OT_USE_RELIC
 
 		protected:
