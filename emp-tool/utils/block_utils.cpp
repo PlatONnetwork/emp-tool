@@ -19,11 +19,11 @@ namespace emp
 		}
 
 		block makeBlock(int64_t x, int64_t y) {
-			return juzix_mm_set_epi64x(x, y);
+			return platon_mm_set_epi64x(x, y);
 		}
 
 		block zero_block() {
-			return juzix_mm_setzero_si128();
+			return platon_mm_setzero_si128();
 		}
 
 		block one_block() {
@@ -32,15 +32,15 @@ namespace emp
 
 
 		block make_delta(const block & a) {
-			return juzix_mm_or_si128(makeBlock(0L, 1L), a);
+			return platon_mm_or_si128(makeBlock(0L, 1L), a);
 		}
 
 		block xorBlocks(block x, block y) {
-			return juzix_mm_xor_si128(x, y);
+			return platon_mm_xor_si128(x, y);
 		}
 
 		block andBlocks(block x, block y) {
-			return juzix_mm_and_si128(x, y);
+			return platon_mm_and_si128(x, y);
 		}
 
 
@@ -62,8 +62,8 @@ namespace emp
 		bool cmpBlock(const block * x, const block * y, int nblocks) {
 			const block * dest = nblocks + x;
 			for (; x != dest;) {
-				block vcmp = juzix_mm_xor_si128(*(x++), *(y++));
-				if (!juzix_mm_testz_si128(vcmp, vcmp))
+				block vcmp = platon_mm_xor_si128(*(x++), *(y++));
+				if (!platon_mm_testz_si128(vcmp, vcmp))
 					return false;
 			}
 			return true;
@@ -76,17 +76,17 @@ namespace emp
 
 		bool isZero(const block * b) {
 //#ifdef WIN32
-			return juzix_mm_testz_si128(*b,*b) > 0;
+			return platon_mm_testz_si128(*b,*b) > 0;
 //#else
 //			return _mm_testz_si128(*b, *b) > 0;
 //#endif
 		}
 
 		bool isOne(const block * b) {
-			//block neq = juzix_mm_xor_si128(*b, one_block());
-			block neq = juzix_mm_xor_si128(*b, juzix_mm_set_epi64x(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL));
+			//block neq = platon_mm_xor_si128(*b, one_block());
+			block neq = platon_mm_xor_si128(*b, platon_mm_set_epi64x(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL));
 //#ifdef WIN32
-			return juzix_mm_testz_si128(neq, neq) > 0;
+			return platon_mm_testz_si128(neq, neq) > 0;
 //#else
 //			return _mm_testz_si128(neq, neq) > 0;
 //#endif
@@ -160,7 +160,7 @@ namespace emp
 			// Do the main body in 16x8 blocks:
 			for (rr = 0; rr <= nrows - 16; rr += 16) {
 				for (cc = 0; cc < ncols; cc += 8) {
-					vec = juzix_mm_set_epi8(
+					vec = platon_mm_set_epi8(
 						*(const int8_t*)input_column(inp, rr + 15, cc, ncols), *(const int8_t*)input_column(inp, rr + 14, cc, ncols), \
 						*(const int8_t*)input_column(inp, rr + 13, cc, ncols), *(const int8_t*)input_column(inp, rr + 12, cc, ncols), \
 						*(const int8_t*)input_column(inp, rr + 11, cc, ncols), *(const int8_t*)input_column(inp, rr + 10, cc, ncols), \
@@ -169,8 +169,8 @@ namespace emp
 						*(const int8_t*)input_column(inp, rr + 5, cc, ncols), *(const int8_t*)input_column(inp, rr + 4, cc, ncols), \
 						*(const int8_t*)input_column(inp, rr + 3, cc, ncols), *(const int8_t*)input_column(inp, rr + 2, cc, ncols), \
 						*(const int8_t*)input_column(inp, rr + 1, cc, ncols), *(const int8_t*)input_column(inp, rr + 0, cc, ncols));
-					for (i = 8; --i >= 0; vec = juzix_mm_slli_epi64(vec, 1))
-						*(uint16_t*)output_row(out, rr, cc + i, nrows) = juzix_mm_movemask_epi8(vec);
+					for (i = 8; --i >= 0; vec = platon_mm_slli_epi64(vec, 1))
+						*(uint16_t*)output_row(out, rr, cc + i, nrows) = platon_mm_movemask_epi8(vec);
 				}
 			}
 			if (rr == nrows) return;
@@ -178,13 +178,13 @@ namespace emp
 			// The remainder is a block of 8x(16n+8) bits (n may be 0).
 			//  Do a PAIR of 8x8 blocks in each step:
 			for (cc = 0; cc <= ncols - 16; cc += 16) {
-				vec = juzix_mm_set_epi16(
+				vec = platon_mm_set_epi16(
 					*(uint16_t const*)input_column(inp, rr + 7, cc, ncols), *(uint16_t const*)input_column(inp, rr + 6, cc, ncols),
 					*(uint16_t const*)input_column(inp, rr + 5, cc, ncols), *(uint16_t const*)input_column(inp, rr + 4, cc, ncols),
 					*(uint16_t const*)input_column(inp, rr + 3, cc, ncols), *(uint16_t const*)input_column(inp, rr + 2, cc, ncols),
 					*(uint16_t const*)input_column(inp, rr + 1, cc, ncols), *(uint16_t const*)input_column(inp, rr + 0, cc, ncols));
-				for (i = 8; --i >= 0; vec = juzix_mm_slli_epi64(vec, 1)) {
-					*output_row(out, rr, cc + i, nrows) = h = juzix_mm_movemask_epi8(vec);
+				for (i = 8; --i >= 0; vec = platon_mm_slli_epi64(vec, 1)) {
+					*output_row(out, rr, cc + i, nrows) = h = platon_mm_movemask_epi8(vec);
 					*output_row(out, rr, cc + i + 8, nrows) = h >> 8;
 				}
 			}
@@ -192,9 +192,9 @@ namespace emp
 
 			//  Do the remaining 8x8 block:
 			for (i = 0; i < 8; ++i)
-				tmp.b[i] = *input_column(inp, rr + i, cc, ncols);///////////////////////////////////// kelvin here !!!!
-			for (i = 8; --i >= 0; tmp.x = juzix_mm_slli_epi64(tmp.x, 1))
-				*output_row(out, rr, cc + i, nrows) = juzix_mm_movemask_epi8(tmp.x);
+				tmp.b[i] = *input_column(inp, rr + i, cc, ncols);
+			for (i = 8; --i >= 0; tmp.x = platon_mm_slli_epi64(tmp.x, 1))
+				*output_row(out, rr, cc + i, nrows) = platon_mm_movemask_epi8(tmp.x);
 			//#undef INP
 			//#undef OUT
 		}
@@ -243,12 +243,12 @@ namespace emp
   / Comments are welcome: Ted Krovetz <ted@krovetz.net> - Dedicated to Laurel K
   /------------------------------------------------------------------------- */
 		block double_block(block bl) {
-			const block mask = juzix_mm_set_epi32(135, 1, 1, 1);
-			block tmp = juzix_mm_srai_epi32(bl, 31);
-			tmp = juzix_mm_and_si128(tmp, mask);
+			const block mask = platon_mm_set_epi32(135, 1, 1, 1);
+			block tmp = platon_mm_srai_epi32(bl, 31);
+			tmp = platon_mm_and_si128(tmp, mask);
 			tmp = _mm_shuffle_epi32(tmp, _MM_SHUFFLE(2,1,0,3));//Note: some platform will not portable
-			bl = juzix_mm_slli_epi32(bl, 1);
-			return juzix_mm_xor_si128(bl, tmp);
+			bl = platon_mm_slli_epi32(bl, 1);
+			return platon_mm_xor_si128(bl, tmp);
 		}
 
 

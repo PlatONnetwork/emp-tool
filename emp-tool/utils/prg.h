@@ -18,13 +18,17 @@
 #include <immintrin.h>//x86intrin.h
 #endif
 
+#if (!defined(_WIN32) || defined(OT_NP_USE_RELIC_WIN))
+#include <gmp.h>
+#endif
 
 /** @addtogroup BP
   @{
  */
 namespace emp {
 
-class PRG { public:
+class PRG {
+public:
 	uint64_t counter = 0;
 	AES_KEY aes;
 	PRG(const void * seed = nullptr, int id = 0) {	
@@ -57,7 +61,7 @@ class PRG { public:
 		}
 	}
 	void reseed(const void * key, uint64_t id = 0) {
-		block v = juzix_mm_loadu_si128((block*)key);
+		block v = platon_mm_loadu_si128((block*)key);
 		v = xorBlocks(v, makeBlock(0LL, id));
 		AES_set_encrypt_key(v, &aes);
 		counter = 0;

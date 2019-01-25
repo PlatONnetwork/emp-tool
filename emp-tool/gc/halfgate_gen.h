@@ -38,11 +38,11 @@ class HalfGateGen:public CircuitExecution { public:
 	bool isDelta(const block & b) {
 #ifdef _WIN32
 		block del = delta;
-		__m128i neq = juzix_mm_xor_si128(b, del);
-		return juzix_mm_testz_si128(neq, neq);
+		__m128i neq = platon_mm_xor_si128(b, del);
+		return platon_mm_testz_si128(neq, neq);
 #else
-		__m128i neq = _mm_xor_si128(b, delta);
-		return _mm_testz_si128(neq, neq);
+		__m128i neq = platon_mm_xor_si128(b, delta);
+		return platon_mm_testz_si128(neq, neq);
 #endif//
 	}
 

@@ -226,7 +226,7 @@ namespace emp
 			mirkill(bigvalue);
 
 			mip->IOBASE = origin;
-            printf("transferbase=> input: %s, dst: %s, old_base: %d, new_base: %d   --------\n", value.c_str(), res.c_str(), old_base, new_base);
+            //printf("transferbase=> input: %s, dst: %s, old_base: %d, new_base: %d   --------\n", value.c_str(), res.c_str(), old_base, new_base);
 			return res;
 		}
 
@@ -285,7 +285,7 @@ namespace emp
 		    }
 
 		    block m[2];
-		    printf("*** OTNP send blocks: \n");
+		    //printf("*** OTNP send blocks: \n");
 		    for(int i = 0; i < length; i++) 
 		    {
 		        io->send_ep(gr[i], 1);
@@ -346,7 +346,7 @@ namespace emp
 				io->send_ep(h, 1); 
 			}
 
-			printf("*** OTNP recv blocks: \n");
+			//printf("*** OTNP recv blocks: \n");
 			for(int i = 0; i < length; ++i) 
 			{
 				io->recv_ep(gr, 1);

@@ -10,4 +10,4 @@ otnp_uninit
 otnp_send
 otnp_recv
 bool_to128
-juzix_func_mm_testz_si128
+platon_func_mm_testz_si128

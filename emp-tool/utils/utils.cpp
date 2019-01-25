@@ -4,9 +4,9 @@
 #include "emp-tool/utils/miracl_utils.h"
 #endif
 
-#ifndef _WIN32
+#if (!defined(_WIN32) || defined(OT_NP_USE_RELIC_WIN))
 #include <gmp.h>
-#endif//
+#endif
 
 namespace emp
 {
