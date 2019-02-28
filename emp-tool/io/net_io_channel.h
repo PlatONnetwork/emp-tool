@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <thread>
 #include "emp-tool/io/io_channel.h"
 #include "constants.h"
 using std::string;

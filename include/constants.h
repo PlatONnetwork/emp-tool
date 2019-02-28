@@ -16,4 +16,24 @@ const static int BOB = 2;
 #define UNIX_PLATFORM
 #endif
 }
+
+// for ir compiler "plang", must define EMP_MPC_DLL_API as empty
+#ifdef EMP_USE_DLL_API_AS_MODULE
+#ifdef _WIN32
+#  if defined(EMP_MPC_STATIC)
+#    define EMP_MPC_DLL_API 
+#  else
+#    if defined(EMP_MPC_EXPORTS)
+#      define EMP_MPC_DLL_API __declspec(dllexport)
+#    else
+#      define EMP_MPC_DLL_API __declspec(dllimport)
+#    endif
+#  endif
+#else
+#  define EMP_MPC_DLL_API 
+#endif
+#else
+#  define EMP_MPC_DLL_API 
+#endif
+
 #endif// CONFIG_H__

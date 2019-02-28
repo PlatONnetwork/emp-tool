@@ -1,5 +1,9 @@
-#include "emp-tool/emp-tool.h"
+#include "emp-tool/utils/prg.h"
+#include "emp-tool/utils/utils.h"
+#include "emp-tool/execution/plain_prot.h"
+#include "bit.h"
 #include <iostream>
+#
 using namespace std;
 using namespace emp;
 

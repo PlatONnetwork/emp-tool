@@ -9,7 +9,7 @@
 using std::string;
 
 namespace emp {
-class Bit : public Swappable<Bit>{ public:
+class EMP_MPC_DLL_API Bit : public Swappable<Bit>{ public:
 	block bit;
 
 	Bit(bool _b = false, int party = PUBLIC);

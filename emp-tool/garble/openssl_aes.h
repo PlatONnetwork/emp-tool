@@ -1,7 +1,7 @@
 #ifdef _WIN32
 #pragma once
 
-
+#include "constants.h"
 
 #include "emp-tool/utils/block_utils.h"
 
@@ -70,17 +70,17 @@ struct aes_key_st {
 
 typedef struct aes_key_st AES_KEY;
 
-void
+EMP_MPC_DLL_API void
 AES_set_encrypt_key(block userkey, AES_KEY *key);
 
-void
+EMP_MPC_DLL_API void
 AES_ecb_encrypt_blks(block *blks, unsigned int nblks, const AES_KEY *key);
 
 
-void
+EMP_MPC_DLL_API void
 AES_set_decrypt_key(block userkey, AES_KEY *key);
 
-void
+EMP_MPC_DLL_API void
 AES_ecb_decrypt_blks(block *blks, unsigned nblks, const AES_KEY *key);
 
 }

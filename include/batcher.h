@@ -1,6 +1,7 @@
 #ifndef BATCHER_H__
 #define BATCHER_H__
 
+#include "constants.h"
 #include <vector>
 #include <cstddef>
 #include "block.h"
@@ -8,7 +9,7 @@ using std::vector;
 
 namespace emp {
 class ProtocolExecution;
-class Batcher { public:
+class EMP_MPC_DLL_API Batcher { public:
 	vector<bool> values;
 	vector<int> lens;
 	int len_ptr = 0;

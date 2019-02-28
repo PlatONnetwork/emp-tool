@@ -19,7 +19,7 @@ namespace emp
 {
 
 
-		class Hash
+		class EMP_MPC_DLL_API Hash
 		{
 		public:
 			SM3_STATE hash;

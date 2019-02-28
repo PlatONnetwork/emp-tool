@@ -1,5 +1,16 @@
-#include "emp-tool/emp-tool.h"
+#include "emp-tool/execution/circuit_execution.h"
+#include "emp-tool/io/net_io_channel.h"
+#include "emp-tool/utils/utils.h"
+#include "emp-tool/utils/prg.h"
+#include "emp-tool/circuits/circuit_file.h"
+#include "emp-tool/gc/garble_circuit.h"
+#include "emp-tool/io/abandon_io_channel.h"
+#include "emp-tool/io/mem_io_channel.h"
+#include "emp-tool/gc/halfgate_eva.h"
+#include "emp-tool/gc/halfgate_gen.h"
 #include <iostream>
+
+
 using namespace std;
 using namespace emp;
 
@@ -19,16 +30,16 @@ void test(NetIO * netio) {
 
 	if(party == BOB) {
 		//HalfGateEva<NetIO, rt>::circ_exec = new HalfGateEva<NetIO, rt>(netio);
-		CircuitExecutionProxy::circ_exec.setup(new HalfGateEva<NetIO, rt>(netio));
+		CircuitExecutionProxy::setup(new HalfGateEva<NetIO, rt>(netio));
 		for(int i = 0; i < 10000; ++i)
 			cf.compute(c, a, b);
 
 		//delete HalfGateEva<NetIO, rt>::circ_exec;
-		CircuitExecutionProxy::circ_exec.finalize();
+		CircuitExecutionProxy::finalize();
 	} else {
 		AbandonIO * aio = new AbandonIO();
 		//HalfGateGen<AbandonIO, rt>::circ_exec = new HalfGateGen<AbandonIO, rt>(aio);
-		CircuitExecutionProxy::circ_exec.setup(new HalfGateGen<AbandonIO, rt>(aio));
+		CircuitExecutionProxy::setup(new HalfGateGen<AbandonIO, rt>(aio));
 
 		auto start = clock_start();
 		for(int i = 0; i < 10000; ++i) {
@@ -38,11 +49,11 @@ void test(NetIO * netio) {
 		cout << "Pure AES garbling speed : "<< 10000*6800/interval<<" million gate per second\n";
 		delete aio;
 		//delete HalfGateGen<AbandonIO, rt>::circ_exec;
-		CircuitExecutionProxy::circ_exec.finalize();
+		CircuitExecutionProxy::finalize();
 
 		MemIO * mio = new MemIO(cf.table_size()*100);
 		//HalfGateGen<MemIO, rt>::circ_exec = new HalfGateGen<MemIO, rt>(mio);
-		CircuitExecutionProxy::circ_exec.setup(new HalfGateGen<MemIO, rt>(mio));
+		CircuitExecutionProxy::setup(new HalfGateGen<MemIO, rt>(mio));
 
 		start = clock_start();
 		for(int i = 0; i < 100; ++i) {
@@ -54,10 +65,10 @@ void test(NetIO * netio) {
 		cout << "AES garbling + Writing to Memory : "<< 10000*6800/interval<<" million gate per second\n";
 		delete mio;
 		//delete HalfGateGen<MemIO, rt>::circ_exec;
-		CircuitExecutionProxy::circ_exec.finalize();
+		CircuitExecutionProxy::finalize();
 
 		//HalfGateGen<NetIO, rt>::circ_exec = new HalfGateGen<NetIO, rt>(netio);
-		CircuitExecutionProxy::circ_exec.setup(new HalfGateGen<NetIO, rt>(netio));
+		CircuitExecutionProxy::setup(new HalfGateGen<NetIO, rt>(netio));
 		start = clock_start();
 		for(int i = 0; i < 10000; ++i) {
 			cf.compute(c, a, b);
@@ -66,7 +77,7 @@ void test(NetIO * netio) {
 		cout << "AES garbling + Loopback Network : "<< 10000*6800/interval<<" million gate per second\n";
 
 		//delete HalfGateGen<NetIO, rt>::circ_exec;
-		CircuitExecutionProxy::circ_exec.finalize();
+		CircuitExecutionProxy::finalize();
 	}
 
 	delete[] a;

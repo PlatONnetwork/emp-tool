@@ -1,9 +1,8 @@
 #ifndef LIBGARBLE_GARBLE_GATE_STANDARD_H
 #define LIBGARBLE_GARBLE_GATE_STANDARD_H
 
-#include "emp-tool/garble/garble.h"
-#include "emp-tool/garble/aes.h"
-#include "emp-tool/garble/block.h"
+#include "emp-tool/garble/garble_aes.h"
+#include "block.h"
 
 #include <assert.h>
 #include <string.h>

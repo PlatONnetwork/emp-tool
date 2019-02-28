@@ -118,7 +118,7 @@ block Hash::hash_for_block(const void * data, int nbyte)
 	memset(digest, 0, sizeof(digest));
 	
 	hash_once(digest, data, nbyte);
-	return juzix_mm_load_si128((block*)&digest[0]);
+	return platon_mm_load_si128((block*)&digest[0]);
 }
 
 

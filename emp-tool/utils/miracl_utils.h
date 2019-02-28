@@ -48,6 +48,7 @@ namespace emp
 		void printHex(const unsigned char* buffer, int size);
 
 		std::string transfer_base(const std::string& value, int old_base, int new_base);
+
 }
 
 #endif // MIRACL_UTIL_H__
