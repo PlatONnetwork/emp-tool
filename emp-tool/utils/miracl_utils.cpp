@@ -1,5 +1,8 @@
 #ifdef OT_NP_USE_MIRACL
 #include "emp-tool/utils/miracl_utils.h"
+#include "emp-tool/utils/sm2_params.h"
+#include "emp-tool/utils/miracl_otnp_utils.h"
+#include "emp-tool/utils/miracl_hash.h"
 #include <cmath>
 #include <algorithm>    // std::max
 
@@ -7,6 +10,9 @@ namespace emp
 {
 		const static int EP_SIZES = 64;
 		const static int FB_BYTES = 32;
+		
+		extern big getP();
+		extern epoint* getG();
 
         int get_ep_sizes()
         {
@@ -220,7 +226,152 @@ namespace emp
 			mirkill(bigvalue);
 
 			mip->IOBASE = origin;
+            //printf("transferbase=> input: %s, dst: %s, old_base: %d, new_base: %d   --------\n", value.c_str(), res.c_str(), old_base, new_base);
 			return res;
+		}
+
+		void otnp_init(void** epointC)
+		{
+			SM2_Init();
+				
+			big c;
+			c = mirvar(0);
+			bigrand(getP(), c);
+			*epointC = epoint_init();
+			ecurve_mult(c, getG(), (epoint*)(*epointC));  // C = c*G
+			//big value should be free
+			mirkill(c);
+		}
+
+		void otnp_uninit(void** epointC)
+		{
+			if (*epointC)
+				epoint_free((epoint*)(*epointC));
+		}
+
+
+		int otnp_send(IOChannel* io, void** epointC, const block* data0, const block* data1, int length)
+		{
+			if (*epointC == nullptr)
+				otnp_init(epointC);
+
+			epoint* C = (epoint*)*epointC;
+			block *m0 = new block[length];
+		    block *m1 = new block[length];
+		    big r;
+		    r = mirvar(0);
+		    epoint *h, *h1;
+		    h = epoint_init();
+		    h1 = epoint_init();
+
+		    epoint **gr = (epoint **)mr_alloc(length, sizeof(epoint*));
+		    for(int i = 0; i < length; ++i)
+		        gr[i] = epoint_init();
+		    
+		    for(int i = 0; i < length; i++) 
+		    {
+		        bigrand(getP(), r);
+		        io->recv_ep(h, 1);   // h
+		        
+		        ecurve_mult(r, getG(), gr[i]);  // g^r  
+
+		        epoint_copy(C, h1);   //h1 = C
+		        ecurve_sub(h, h1);    // h1 = C-h
+		        ecurve_mult(r, h, h);   // h' = h^r
+		        ecurve_mult(r, h1, h1);   // h1 = (C-h)^r
+		        m0[i] = Hash::hash_for_epoint(h);   //H(h^r)
+		        m1[i] = Hash::hash_for_epoint(h1);  // H((C/h)^r) 
+
+		    }
+
+		    block m[2];
+		    //printf("*** OTNP send blocks: \n");
+		    for(int i = 0; i < length; i++) 
+		    {
+		        io->send_ep(gr[i], 1);
+		        
+		        m[0] = xorBlocks(data0[i], m0[i]);
+		        m[1] = xorBlocks(data1[i], m1[i]);
+		        io->send_data(m, 2 * sizeof(block));
+		    }
+
+		    for(int i = 0; i < length; ++i) 
+		    {
+		        epoint_free(gr[i]);
+		    }
+
+		    mirkill(r);
+		    epoint_free(h);
+		    epoint_free(h1);
+		    delete[] gr;
+		    delete[] m0;
+		    delete[] m1;
+
+		    return 0;
+		}
+
+		int otnp_recv(IOChannel* io, void** epointC, block* data, const bool* b, int length)
+		{
+			if (*epointC == nullptr)
+				otnp_init(epointC);
+
+			
+			big *k = new big[length];
+			epoint *h, *pk1;
+			epoint *gr ;
+			epoint* C = (epoint*)*epointC;
+			gr = epoint_init();
+			block m[2];
+			for(int i = 0; i < length; ++i) 
+			{
+				k[i] = mirvar(0);
+			}
+			h = epoint_init();
+			pk1 = epoint_init();
+
+			for(int i = 0; i < length; i++) 
+			{
+				bigrand(getP(), k[i]);
+			}
+			
+			for(int i = 0; i < length; i++) 
+			{
+				if(b[i]) {
+					ecurve_mult(k[i], getG(), pk1);   // pk1 = g^ki
+					epoint_copy(C, h);  // h = C
+					ecurve_sub(pk1, h);  // h = C - pk1 = C - g^ki
+				} else {
+					ecurve_mult(k[i], getG(), h);  // h = g^ki
+				}
+				io->send_ep(h, 1); 
+			}
+
+			//printf("*** OTNP recv blocks: \n");
+			for(int i = 0; i < length; ++i) 
+			{
+				io->recv_ep(gr, 1);
+				io->recv_data(m, 2 * sizeof(block));
+				
+		        //printBlock(m, 2);
+		        
+				int ind = b[i]?1:0;
+
+				ecurve_mult(k[i], gr, gr);  // gr = gr^ki
+				// data_b =H(gr^ki) + m_b
+				block tempB1 = Hash::hash_for_epoint(gr);
+				block tempB2 = Hash::hash_for_epoint(gr);
+				data[i] = xorBlocks(m[ind], Hash::hash_for_epoint(gr));
+			}
+
+			for(int i = 0; i < length; ++i) 
+			{
+				mirkill(k[i]);
+			}
+			
+			epoint_free(gr);
+			epoint_free(h);
+			delete[] k;
+			return 0;
 		}
 
 }//emp

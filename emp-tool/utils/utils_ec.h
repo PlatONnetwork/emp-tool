@@ -1,4 +1,5 @@
 #ifndef OT_NP_USE_MIRACL
+
 #ifndef UTILS_EC_H__
 #define UTILS_EC_H__
 
@@ -18,8 +19,9 @@ extern "C" {
 #include <stdio.h>
 #include "emp-tool/utils/block_utils.h"
 #include "emp-tool/utils/hash.h"
+#ifndef _WIN32
 #include <gmp.h>
-
+#endif
 
 
 namespace emp {

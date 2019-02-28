@@ -155,50 +155,50 @@ using emp::block;
 
 /////////  function declaration /////////////
 //_mm_slli_epi64(B,1)
-block juzix_func_mm_slli_epi64(block b, int count);
+block platon_func_mm_slli_epi64(block b, int count);
 
 //_mm_slli_epi32
-block juzix_func_mm_slli_epi32(block b, int count);
+block platon_func_mm_slli_epi32(block b, int count);
 
 //_mm_setzero_si128()
-block juzix_func_mm_setzero_si128();
+block platon_func_mm_setzero_si128();
 
 //_mm_loadu_si128
-block juzix_func_mm_loadu_si128(block* b);
+block platon_func_mm_loadu_si128(block* b);
 
 //_mm_loadl_epi64
-block juzix_func_mm_loadl_epi64(block* id);
+block platon_func_mm_loadl_epi64(block* id);
 
 //_mm_xor_si128
-block juzix_func_mm_xor_si128(block x, block y);
+block platon_func_mm_xor_si128(block x, block y);
 
 //_mm_and_si128
-block juzix_func_mm_and_si128(block x, block y);
+block platon_func_mm_and_si128(block x, block y);
 //_mm_or_si128
-block juzix_func_mm_or_si128(block x, block y);
+block platon_func_mm_or_si128(block x, block y);
 
 //_mm_set_epi8(ch17,ch16..., ch0)
-block juzix_func_mm_set_epi8(char b15, char b14, char b13, char b12, char b11, char b10, char b9, char b8, char b7, char b6, char b5, char b4, char b3, char b2, char b1, char b0);
+block platon_func_mm_set_epi8(char b15, char b14, char b13, char b12, char b11, char b10, char b9, char b8, char b7, char b6, char b5, char b4, char b3, char b2, char b1, char b0);
 
 
 //_mm_set_epi16(b7,b6,...,b0)
-block juzix_func_mm_set_epi16(short b7, short b6, short b5, short b4, short b3, short b2, short b1, short b0);
+block platon_func_mm_set_epi16(short b7, short b6, short b5, short b4, short b3, short b2, short b1, short b0);
 
 //_mm_set_epi32
-block juzix_func_mm_set_epi32(int i3, int i2, int i1, int i0);
+block platon_func_mm_set_epi32(int i3, int i2, int i1, int i0);
 
 //_mm_set_epi64((__m64)(X), (__m64)(Y))
-block juzix_func_mm_set_epi64(uint64_t i1, uint64_t i0);
+block platon_func_mm_set_epi64(uint64_t i1, uint64_t i0);
 
 //_mm_movemask_epi8
-int juzix_func_mm_movemask_epi8(block b);
+int platon_func_mm_movemask_epi8(block b);
 
 //_mm_srai_epi32
-block juzix_func_mm_srai_epi32(block a, int count);
+block platon_func_mm_srai_epi32(block a, int count);
 
 
 ///////     exception functions //////////////////
-block juzix_func_mm_and_si128(block x, block y);
+block platon_func_mm_and_si128(block x, block y);
 
 // _mm_testz_si128(__m128i s1, __m128i s2);
 /*
@@ -209,13 +209,13 @@ Returns '1' if the bitwise AND operation on s1 and s2 results in all zeros, else
 _mm_testz_si128 := ( (s1 & s2) == 0 ? 1 : 0 )
 
 **/
-int juzix_func_mm_testz_si128(block x, block y);//exception in redhat or centos linux
+int platon_func_mm_testz_si128(block x, block y);//exception in redhat or centos linux
 
 //_mm_set_epi64x((__m64)(X), (__m64)(Y))
-block juzix_func_mm_set_epi64x(uint64_t i1, uint64_t i0);
+block platon_func_mm_set_epi64x(uint64_t i1, uint64_t i0);
 
 //_mm_load_si128
-block juzix_func_mm_load_si128(block* X);
+block platon_func_mm_load_si128(block* X);
 ///////     exception functions //////////////////
 
 
@@ -233,51 +233,51 @@ Returns '1' if the bitwise AND operation on s1 and s2 results in all zeros, else
 _mm_testz_si128 := ( (s1 & s2) == 0 ? 1 : 0 )
 
 **/
-#define juzix_mm_testz_si128(x,y) juzix_func_mm_testz_si128(x,y)
+#define platon_mm_testz_si128(x,y) platon_func_mm_testz_si128(x,y)
 
 //_mm_slli_epi64
-#define juzix_mm_slli_epi64(X,N) _mm_slli_epi64(X,N)
+#define platon_mm_slli_epi64(X,N) _mm_slli_epi64(X,N)
 //_mm_slli_epi32
-#define juzix_mm_slli_epi32(X,N) _mm_slli_epi32(X,N)
+#define platon_mm_slli_epi32(X,N) _mm_slli_epi32(X,N)
 //_mm_setzero_si128
-#define juzix_mm_setzero_si128() _mm_setzero_si128()
+#define platon_mm_setzero_si128() _mm_setzero_si128()
 //_mm_load_si128
-#define juzix_mm_load_si128(x) _mm_load_si128((block*)x)
+#define platon_mm_load_si128(x) _mm_load_si128((block*)x)
 //_mm_loadu_si128
-#define juzix_mm_loadu_si128(x) _mm_loadu_si128((block*)x)
+#define platon_mm_loadu_si128(x) _mm_loadu_si128((block*)x)
 
 //_mm_loadl_epi64
-#define juzix_mm_loadl_epi64(x) _mm_loadl_epi64((block*)x)
+#define platon_mm_loadl_epi64(x) _mm_loadl_epi64((block*)x)
 
 //_mm_xor_si128
-#define juzix_mm_xor_si128(x,y) _mm_xor_si128(x,y)
+#define platon_mm_xor_si128(x,y) _mm_xor_si128(x,y)
 
 //_mm_and_si128
-#define juzix_mm_and_si128(x,y) _mm_and_si128(x,y)
+#define platon_mm_and_si128(x,y) _mm_and_si128(x,y)
 
 //_mm_or_si128
-#define juzix_mm_or_si128(x,y) _mm_or_si128(x,y)
+#define platon_mm_or_si128(x,y) _mm_or_si128(x,y)
 
 //_mm_srai_epi32
-#define juzix_mm_srai_epi32(x, n) _mm_srai_epi32(x, n)
+#define platon_mm_srai_epi32(x, n) _mm_srai_epi32(x, n)
 
 //_mm_set_epi8(ch17,ch16..., ch0)
-#define juzix_mm_set_epi8(b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0) _mm_set_epi8(b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0)
+#define platon_mm_set_epi8(b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0) _mm_set_epi8(b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0)
 
 //_mm_set_epi16(b7,b6,...,b0)
-#define juzix_mm_set_epi16(b7,b6,b5,b4,b3,b2,b1,b0) _mm_set_epi16(b7,b6,b5,b4,b3,b2,b1,b0)
+#define platon_mm_set_epi16(b7,b6,b5,b4,b3,b2,b1,b0) _mm_set_epi16(b7,b6,b5,b4,b3,b2,b1,b0)
 
 //_mm_set_epi32
-#define juzix_mm_set_epi32(b3,b2,b1,b0) _mm_set_epi32(b3,b2,b1,b0)
+#define platon_mm_set_epi32(b3,b2,b1,b0) _mm_set_epi32(b3,b2,b1,b0)
 
 //_mm_set_epi64
-#define juzix_mm_set_epi64(X,Y)	juzix_func_mm_set_epi64(X,Y)
+#define platon_mm_set_epi64(X,Y)	platon_func_mm_set_epi64(X,Y)
 
 //_mm_set_epi64x
-#define juzix_mm_set_epi64x(X,Y) juzix_func_mm_set_epi64(X, Y)
+#define platon_mm_set_epi64x(X,Y) platon_func_mm_set_epi64(X, Y)
 
 //_mm_movemask_epi8
-#define juzix_mm_movemask_epi8(x) _mm_movemask_epi8(x)
+#define platon_mm_movemask_epi8(x) _mm_movemask_epi8(x)
 
 /////////////////// mm_ins //////////
 
@@ -285,52 +285,52 @@ _mm_testz_si128 := ( (s1 & s2) == 0 ? 1 : 0 )
 ////////  implement with funciton //////////////
 
 //_mm_slli_epi64
-#define juzix_mm_slli_epi64(X,N) juzix_func_mm_slli_epi64(X,N)
+#define platon_mm_slli_epi64(X,N) platon_func_mm_slli_epi64(X,N)
 
 //_mm_slli_epi32
-#define juzix_mm_slli_epi32(X,N) juzix_func_mm_slli_epi32(X,N)
+#define platon_mm_slli_epi32(X,N) platon_func_mm_slli_epi32(X,N)
 
 //_mm_setzero_si128
-#define juzix_mm_setzero_si128() juzix_func_mm_setzero_si128()
+#define platon_mm_setzero_si128() platon_func_mm_setzero_si128()
 
 //_mm_load_si128
-#define juzix_mm_load_si128(x) juzix_func_mm_load_si128((block*)x)
+#define platon_mm_load_si128(x) platon_func_mm_load_si128((block*)x)
 
 //_mm_loadu_si128
-#define juzix_mm_loadu_si128(x) juzix_func_mm_loadu_si128((block*)x)
+#define platon_mm_loadu_si128(x) platon_func_mm_loadu_si128((block*)x)
 
 //_mm_loadl_epi64
-#define juzix_mm_loadl_epi64(x) juzix_func_mm_loadl_epi64((block*)x)
+#define platon_mm_loadl_epi64(x) platon_func_mm_loadl_epi64((block*)x)
 
 //_mm_xor_si128
-#define juzix_mm_xor_si128(x,y) juzix_func_mm_xor_si128(x, y)
+#define platon_mm_xor_si128(x,y) platon_func_mm_xor_si128(x, y)
 
 //_mm_and_si128
-#define juzix_mm_and_si128(x,y) juzix_func_mm_and_si128(x,y)
+#define platon_mm_and_si128(x,y) platon_func_mm_and_si128(x,y)
 
 //_mm_or_si128
-#define juzix_mm_or_si128(x,y) juzix_func_mm_or_si128(x,y)
+#define platon_mm_or_si128(x,y) platon_func_mm_or_si128(x,y)
 
 //_mm_srai_epi32
-#define juzix_mm_srai_epi32(x, n) juzix_func_mm_srai_epi32(x, n)
+#define platon_mm_srai_epi32(x, n) platon_func_mm_srai_epi32(x, n)
 
 //_mm_set_epi8(ch17,ch16..., ch0)
-#define juzix_mm_set_epi8(b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0) juzix_func_mm_set_epi8(b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0)
+#define platon_mm_set_epi8(b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0) platon_func_mm_set_epi8(b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0)
 
 //_mm_set_epi16(b7,b6,...,b0)
-#define juzix_mm_set_epi16(b7, b6, b5, b4, b3, b2, b1, b0) juzix_func_mm_set_epi16(b7, b6, b5, b4, b3, b2, b1, b0)
+#define platon_mm_set_epi16(b7, b6, b5, b4, b3, b2, b1, b0) platon_func_mm_set_epi16(b7, b6, b5, b4, b3, b2, b1, b0)
 
 //_mm_set_epi32
-#define juzix_mm_set_epi32(b3,b2,b1,b0) juzix_func_mm_set_epi32(b3,b2,b1,b0)
+#define platon_mm_set_epi32(b3,b2,b1,b0) platon_func_mm_set_epi32(b3,b2,b1,b0)
 
 //_mm_set_epi64
-#define juzix_mm_set_epi64(X,Y) juzix_func_mm_set_epi64((uint64_t)X, (uint64_t)Y)
+#define platon_mm_set_epi64(X,Y) platon_func_mm_set_epi64((uint64_t)X, (uint64_t)Y)
 
 //_mm_set_epi64x
-#define juzix_mm_set_epi64x(X,Y) juzix_func_mm_set_epi64x(X, Y)
+#define platon_mm_set_epi64x(X,Y) platon_func_mm_set_epi64x(X, Y)
 
 //_mm_movemask_epi8
-#define juzix_mm_movemask_epi8(x) juzix_func_mm_movemask_epi8(x)
+#define platon_mm_movemask_epi8(x) platon_func_mm_movemask_epi8(x)
 
 
 
@@ -342,7 +342,7 @@ Returns '1' if the bitwise AND operation on s1 and s2 results in all zeros, else
 _mm_testz_si128 := ( (s1 & s2) == 0 ? 1 : 0 )
 
 **/
-#define juzix_mm_testz_si128(x,y) juzix_func_mm_testz_si128(x,y)
+#define platon_mm_testz_si128(x,y) platon_func_mm_testz_si128(x,y)
 
 #endif//
 

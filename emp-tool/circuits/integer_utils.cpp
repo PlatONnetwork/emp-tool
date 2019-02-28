@@ -139,13 +139,13 @@ void init(Bit * bits, const bool* b, int length, int party/* = PUBLIC */);
 void init(Bit * bits, const bool* b, int length, int party) {
 	block * bbits = (block *) bits;
 	if (party == PUBLIC) {
-		block one = CircuitExecutionProxy::circ_exec.public_label(true);
-		block zero = CircuitExecutionProxy::circ_exec.public_label(false);
+		block one = CircuitExecutionProxy::public_label(true);
+		block zero = CircuitExecutionProxy::public_label(false);
 		for(int i = 0; i < length; ++i)
 			bbits[i] = b[i] ? one : zero;
 	}
 	else {
-		ProtocolExecutionProxy::prot_exec.feed((block *)bits, party, b, length); 
+		ProtocolExecutionProxy::feed((block *)bits, party, b, length); 
 	}
 }
 

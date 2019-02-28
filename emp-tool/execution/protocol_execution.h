@@ -2,84 +2,126 @@
 #define PROTOCOL_EXECUTION_H__
 #include "block.h"
 #include "constants.h"
+#include <stdio.h>
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <pthread.h>
+#endif
 
-namespace emp {
+namespace emp
+{
 
 	class ProtocolExecution {
-		public:
-			int cur_party;
-			//CircuitExecution* gc_ = nullptr;
+	public:
+		int cur_party;
+		//ProtocolExecution* gc_ = nullptr;
 
 
-			ProtocolExecution(int party = PUBLIC) : cur_party(party) {}
-			virtual ~ProtocolExecution() {}
-			virtual void feed(block * lbls, int party, const bool* b, int nel) = 0;
-			virtual void reveal(bool*out, int party, const block *lbls, int nel) = 0;
-			virtual void finalize() {}
+		ProtocolExecution(int party = PUBLIC) : cur_party(party) {}
+		virtual ~ProtocolExecution() {}
+		virtual void feed(block * lbls, int party, const bool* b, int nel) = 0;
+		virtual void reveal(bool*out, int party, const block *lbls, int nel) = 0;
+		virtual void finalize() {}
 
-			//virtual void setup(IOChannel* io) = 0;
+		//virtual void setup(IOChannel* io) = 0;
 
-		};
+	};
 
-		class ProtocolExecutionProxy
+	class EMP_MPC_DLL_API ProtocolExecutionProxy
+	{
+	private:
+		#ifdef _WIN32
+		    static DWORD prot_proxy_key_;
+		#else
+		    static pthread_key_t prot_proxy_key_;
+		#endif//
+
+		static ProtocolExecutionProxy prot_exec_;
+
+		static void prot_global_init()
 		{
-		public:
-			static thread_local ProtocolExecutionProxy prot_exec;
+#ifdef _WIN32
+			prot_proxy_key_ = TlsAlloc();
+#else
+			pthread_key_create(&prot_proxy_key_, (void(*)(void *))NULL);
+#endif
+		}
 
-			ProtocolExecution* prot_exec_ = nullptr;
+		static void prot_global_uninit()
+		{
+#ifdef _WIN32
+			TlsFree(prot_proxy_key_);
+#else
+			pthread_key_delete(prot_proxy_key_);
+#endif
+		}
 
-			~ProtocolExecutionProxy() {
-				finalize();
-			}
-
-			void setup(ProtocolExecution* prot)
+	public:
+		static ProtocolExecution* getProtocolExecution()
+		{
+#ifdef _WIN32
+			LPVOID lret = TlsGetValue(prot_proxy_key_);
+#else
+			void* lret = pthread_getspecific(prot_proxy_key_);
+#endif
+			if (lret != 0)
+				return (ProtocolExecution*)lret;
+			else
 			{
-				if (prot_exec_)
-				{
-					prot_exec_->finalize();
-					delete prot_exec_;
-					prot_exec_ = nullptr;
-				}
-
-				prot_exec_ = prot;
+				printf("nullptr for prot_exec !\n");
+				return nullptr;
 			}
+		}
 
-			void finalize()
+		ProtocolExecutionProxy() {
+			prot_global_init();
+		}
+		~ProtocolExecutionProxy() {
+			prot_global_uninit();
+		}
+
+		static void setup(ProtocolExecution* _prot_exec)
+		{
+#ifdef _WIN32
+			TlsSetValue(prot_proxy_key_, _prot_exec);
+#else
+			pthread_setspecific(prot_proxy_key_, _prot_exec);
+#endif
+		}
+
+		static void finalize()
+		{
+#ifdef _WIN32
+			LPVOID lret = TlsGetValue(prot_proxy_key_);
+			if (lret != 0)
 			{
-				if (prot_exec_)
-				{
-					prot_exec_->finalize();
-					delete prot_exec_;
-					prot_exec_ = nullptr;
-				}
+				delete (ProtocolExecution*)lret;
+				TlsSetValue(prot_proxy_key_, nullptr);
 			}
-
-			void feed(block * lbls, int party, const bool* b, int nel)
+#else
+			void* lret = pthread_getspecific(prot_proxy_key_);
+			if (lret != NULL)
 			{
-				return prot_exec_->feed(lbls, party, b, nel);
+				delete (ProtocolExecution*)lret;
+				pthread_setspecific(prot_proxy_key_, NULL);
 			}
+#endif
+		}
 
-			void reveal(bool*out, int party, const block *lbls, int nel)
-			{
-				return prot_exec_->reveal(out, party, lbls, nel);
-			}
+		static void feed(block * lbls, int party, const bool* b, int nel)
+		{
+			ProtocolExecution* ptr = getProtocolExecution();
+			if (ptr != nullptr)
+				return ptr->feed(lbls, party, b, nel);
+		}
 
-		};
-
-// class ProtocolExecution { 
-// public:
-// 	int cur_party;
-// #ifndef THREADING
-// 	static ProtocolExecution * prot_exec;
-// #else
-// 	static __thread ProtocolExecution * prot_exec;
-// #endif
-
-// 	ProtocolExecution(int party = PUBLIC) : cur_party (party) {}
-// 	virtual ~ProtocolExecution() {}
-// 	virtual void feed(block * lbls, int party, const bool* b, int nel) = 0;
-// 	virtual void reveal(bool*out, int party, const block *lbls, int nel) = 0;
-// 	virtual void finalize() {}
-// };
-}
+		static void reveal(bool*out, int party, const block *lbls, int nel)
+		{
+			ProtocolExecution* ptr = getProtocolExecution();
+			if (ptr != nullptr)
+				return ptr->reveal(out, party, lbls, nel);
+		}
+	};
+}//emp
 #endif

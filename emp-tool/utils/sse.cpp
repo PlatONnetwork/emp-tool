@@ -8,10 +8,10 @@
 #ifndef __ARM_NEON__
 
 //_mm_slli_epi64(B,1)
-block juzix_func_mm_slli_epi64(block b, int count) 
+block platon_func_mm_slli_epi64(block b, int count) 
 {
     //left move
-    //printf("-------------  juzix_func_mm_slli_epi64 \n");
+    //printf("-------------  platon_func_mm_slli_epi64 \n");
     block blk;
     uint64_t* pt = (uint64_t*)&blk;
     uint64_t* ptx = (uint64_t*)&b;
@@ -21,10 +21,10 @@ block juzix_func_mm_slli_epi64(block b, int count)
 }
 
 //_mm_slli_epi32
-block juzix_func_mm_slli_epi32(block b, int count)
+block platon_func_mm_slli_epi32(block b, int count)
 {
     //left move
-    //printf("-------------  juzix_func_mm_slli_epi32 \n");
+    //printf("-------------  platon_func_mm_slli_epi32 \n");
     block blk;
     uint32_t* pt = (uint32_t*)&blk;
     uint32_t* ptx = (uint32_t*)&b;
@@ -38,9 +38,9 @@ block juzix_func_mm_slli_epi32(block b, int count)
 
 
 //_mm_setzero_si128()
-block juzix_func_mm_setzero_si128()
+block platon_func_mm_setzero_si128()
 {
-    //printf("-------------  juzix_func_mm_setzero_si128 \n");
+    //printf("-------------  platon_func_mm_setzero_si128 \n");
     block blk;
     memset(&blk, 0, sizeof(blk));
     return blk;
@@ -48,19 +48,19 @@ block juzix_func_mm_setzero_si128()
 
 
 //_mm_loadu_si128
-block juzix_func_mm_loadu_si128(block* b) 
+block platon_func_mm_loadu_si128(block* b) 
 {
     //Loads 128-bit value. Address p not need be 16-byte aligned.
-    //printf("-------------  juzix_func_mm_loadu_si128 \n");
+    //printf("-------------  platon_func_mm_loadu_si128 \n");
     return *b;
 }
 
 //_mm_loadl_epi64
-block juzix_func_mm_loadl_epi64(block* id)
+block platon_func_mm_loadl_epi64(block* id)
 {
     //Load the lower 64 bits of the value pointed to by p into the lower 64 bits of the result, zeroing the upper 64 bits of the result.
     //k_128 = _mm_loadl_epi64((__m128i const *) (&id));
-    //printf("-------------  juzix_func_mm_loadl_epi64 \n");
+    //printf("-------------  platon_func_mm_loadl_epi64 \n");
     block blk;
     uint64_t* ptr = (uint64_t*)id;
     uint64_t* ret = (uint64_t*)&blk;
@@ -71,7 +71,7 @@ block juzix_func_mm_loadl_epi64(block* id)
 
 
 //_mm_xor_si128
-block juzix_func_mm_xor_si128(block x, block y)
+block platon_func_mm_xor_si128(block x, block y)
 {
     block blk;
     uint64_t* pt = (uint64_t*)&blk;
@@ -84,9 +84,9 @@ block juzix_func_mm_xor_si128(block x, block y)
 }
 
 //_mm_or_si128
-block juzix_func_mm_or_si128(block x, block y)
+block platon_func_mm_or_si128(block x, block y)
 {
-    //printf("-------------  juzix_func_mm_or_si128 \n");
+    //printf("-------------  platon_func_mm_or_si128 \n");
     block blk;
     uint64_t* pt = (uint64_t*)&blk;
     uint64_t* ptx = (uint64_t*)&x;
@@ -99,7 +99,7 @@ block juzix_func_mm_or_si128(block x, block y)
 
 
 //_mm_set_epi8(ch17,ch16..., ch0)
-block juzix_func_mm_set_epi8(char b15, char b14, char b13, char b12, char b11, char b10, char b9, char b8, char b7, char b6, char b5, char b4, char b3, char b2, char b1, char b0)
+block platon_func_mm_set_epi8(char b15, char b14, char b13, char b12, char b11, char b10, char b9, char b8, char b7, char b6, char b5, char b4, char b3, char b2, char b1, char b0)
 {
     block blk;
     
@@ -128,7 +128,7 @@ block juzix_func_mm_set_epi8(char b15, char b14, char b13, char b12, char b11, c
 
 
 //_mm_set_epi16(b7,b6,...,b0)
-block juzix_func_mm_set_epi16(short b7, short b6, short b5, short b4, short b3, short b2, short b1, short b0)
+block platon_func_mm_set_epi16(short b7, short b6, short b5, short b4, short b3, short b2, short b1, short b0)
 {
    block ret;
    //do some conversation
@@ -147,7 +147,7 @@ block juzix_func_mm_set_epi16(short b7, short b6, short b5, short b4, short b3, 
 }
 
 //_mm_set_epi32
-block juzix_func_mm_set_epi32(int i3, int i2, int i1, int i0)
+block platon_func_mm_set_epi32(int i3, int i2, int i1, int i0)
 {
     //_mm_set_epi32(a,b,c,d)
     block ret;
@@ -162,7 +162,7 @@ block juzix_func_mm_set_epi32(int i3, int i2, int i1, int i0)
 }
 
 //_mm_movemask_epi8
-int juzix_func_mm_movemask_epi8(block b)
+int platon_func_mm_movemask_epi8(block b)
 {
     //todo: 需要自己实现， 以下可能理解不准确！！！！
     int value = 0;//32bits
@@ -178,7 +178,7 @@ int juzix_func_mm_movemask_epi8(block b)
 }
 
 
-block juzix_func_mm_srai_epi32(block a, int count)
+block platon_func_mm_srai_epi32(block a, int count)
 {
     //Shifts the four signed 32-bit integers in a right by count bits while shifting in the sign bit.
     block blk;
@@ -192,7 +192,7 @@ block juzix_func_mm_srai_epi32(block a, int count)
     return blk;
 }
 
-static block juzix_func_mm_clmulepi64_si128 (block a, block b, int imm8)
+static block platon_func_mm_clmulepi64_si128 (block a, block b, int imm8)
 {
     // ToDo
     block blk;
@@ -201,11 +201,11 @@ static block juzix_func_mm_clmulepi64_si128 (block a, block b, int imm8)
 
 ///////     exception functions //////////////////
 
-//juzix_func_mm_testz_si128 is a exeptional function
+//platon_func_mm_testz_si128 is a exeptional function
 //_mm_and_si128
-block juzix_func_mm_and_si128(block x, block y)
+block platon_func_mm_and_si128(block x, block y)
 {
-    //printf("-------------  juzix_func_mm_and_si128 \n");
+    //printf("-------------  platon_func_mm_and_si128 \n");
     block blk;
     uint64_t* pt = (uint64_t*)&blk;
     uint64_t* ptx = (uint64_t*)&x;
@@ -224,15 +224,15 @@ Returns '1' if the bitwise AND operation on s1 and s2 results in all zeros, else
 _mm_testz_si128 := ( (s1 & s2) == 0 ? 1 : 0 )
 
 **/
-int juzix_func_mm_testz_si128(block x, block y)
+int platon_func_mm_testz_si128(block x, block y)
 {
-    block ret = juzix_func_mm_and_si128(x, y);
+    block ret = platon_func_mm_and_si128(x, y);
     uint64_t* ptr = (uint64_t*)&ret;
     return ptr[0] == 0 && ptr[1] == 0 ? 1 : 0;
 }
 
 //_mm_set_epi64((__m64)(X), (__m64)(Y))
-block juzix_func_mm_set_epi64(uint64_t i1, uint64_t i0)
+block platon_func_mm_set_epi64(uint64_t i1, uint64_t i0)
 {
     //_mm_set_epi32(a,b,c,d)
     block ret;
@@ -245,16 +245,16 @@ block juzix_func_mm_set_epi64(uint64_t i1, uint64_t i0)
 }
 
 //_mm_set_epi64x(X, Y)
-block juzix_func_mm_set_epi64x(uint64_t i1, uint64_t i0)
+block platon_func_mm_set_epi64x(uint64_t i1, uint64_t i0)
 {
-    return juzix_func_mm_set_epi64(i1, i0);
+    return platon_func_mm_set_epi64(i1, i0);
 }
 
 //_mm_load_si128
-block juzix_func_mm_load_si128(block* X)
+block platon_func_mm_load_si128(block* X)
 {
     //Loads 128-bit value. Address p must be 16-byte aligned.
-    //printf("-------------  juzix_func_mm_load_si128 \n");
+    //printf("-------------  platon_func_mm_load_si128 \n");
     return *X;
 }
 
@@ -263,14 +263,14 @@ block juzix_func_mm_load_si128(block* X)
 
 #else// __ARM_NEON__
 
-block juzix_func_mm_slli_si128(block a, int count)
+block platon_func_mm_slli_si128(block a, int count)
 { 
 	block ret; 
 	if (count <= 0) { 
 		ret = a; 
 	} 
 	else if (count > 15) { 
-		ret = juzix_func_mm_setzero_si128(); 
+		ret = platon_func_mm_setzero_si128(); 
 	} 
 	else { 
 		ret = vreinterpretq_m128i_s8(vextq_s8(vreinterpretq_s8_m128i(a), vdupq_n_s8(0), count)); 
@@ -278,14 +278,14 @@ block juzix_func_mm_slli_si128(block a, int count)
 	ret; 
 }
 
-block juzix_func_mm_slli_si128(block a, int count)
+block platon_func_mm_slli_si128(block a, int count)
 { 
 	block ret; 
 	if (count <= 0) { 
 		ret = a; 
 	} 
 	else if (count > 15) { 
-		ret = juzix_func_mm_setzero_si128(); 
+		ret = platon_func_mm_setzero_si128(); 
 	} 
 	else { 
 		ret = vreinterpretq_m128i_s8(vextq_s8(vdupq_n_s8(0), vreinterpretq_s8_m128i(a), 16 - count)); \
@@ -294,14 +294,14 @@ block juzix_func_mm_slli_si128(block a, int count)
 }
 
 
-block juzix_func_mm_slli_epi64(block b, int count)
+block platon_func_mm_slli_epi64(block b, int count)
 {
 	block ret;
 	if (count <= 0) {
 		ret = b;
 	}
 	else if (count > 63) {
-		ret = juzix_func_mm_setzero_si128();
+		ret = platon_func_mm_setzero_si128();
 	}
 	else {
 		ret = vreinterpretq_m128i_s64(vshlq_n_s64(vreinterpretq_s64_m128i(b), count));
@@ -309,14 +309,14 @@ block juzix_func_mm_slli_epi64(block b, int count)
 	return ret;
 }
 
-block juzix_func_mm_slli_epi32(block b, int count)
+block platon_func_mm_slli_epi32(block b, int count)
 {
     block ret; 
     if (count <= 0) {
         ret = b; 
     } 
     else if (count > 31) { 
-        ret = juzix_func_mm_setzero_si128(); 
+        ret = platon_func_mm_setzero_si128(); 
     } 
     else { 
         ret = vreinterpretq_m128i_s32(vshlq_n_s32(vreinterpretq_s32_m128i(b), (count))); 
@@ -324,74 +324,74 @@ block juzix_func_mm_slli_epi32(block b, int count)
     return ret; 
 }
 
-block juzix_func_mm_setzero_si128()
+block platon_func_mm_setzero_si128()
 {
     return vreinterpretq_m128i_s32(vdupq_n_s32(0));
 }
 
 
-block juzix_func_mm_load_si128(block* p)
+block platon_func_mm_load_si128(block* p)
 {
     return vreinterpretq_m128i_s32(vld1q_s32((int32_t *)p));
 }
 
-block juzix_func_mm_loadu_si128(block* p);
+block platon_func_mm_loadu_si128(block* p);
 {
     return vreinterpretq_m128i_s32(vld1q_u32((uint32_t *)p));
 }
 
-block juzix_func_mm_loadl_epi64(block* p)
+block platon_func_mm_loadl_epi64(block* p)
 {
     uint64x1_t lo = vget_low_u64(vreinterpretq_u64_m128i(*p));
     return vreinterpretq_m128i_u64(vcombine_u64(lo, vcreate_u64(0x0)));
 }
 
-block juzix_func_mm_xor_si128(block x, block y)
+block platon_func_mm_xor_si128(block x, block y)
 {
     return vreinterpretq_m128i_s32( veorq_s32(vreinterpretq_s32_m128i(x), vreinterpretq_s32_m128i(y)) );
 }
 
-block juzix_func_mm_and_si128(block x, block y)
+block platon_func_mm_and_si128(block x, block y)
 {
     return vreinterpretq_m128i_s32( vandq_s32(vreinterpretq_s32_m128i(x), vreinterpretq_s32_m128i(y)) );
 }
 
-block juzix_func_mm_or_si128(block x, block y)
+block platon_func_mm_or_si128(block x, block y)
 {
     return vreinterpretq_m128i_s32( vorrq_s32(vreinterpretq_s32_m128i(x), vreinterpretq_s32_m128i(y)) );
 }
 
-block juzix_func_mm_set_epi8(char b15, char b14, char b13, char b12, char b11, char b10, char b9, char b8, char b7, char b6, char b5, char b4, char b3, char b2, char b1, char b0)
+block platon_func_mm_set_epi8(char b15, char b14, char b13, char b12, char b11, char b10, char b9, char b8, char b7, char b6, char b5, char b4, char b3, char b2, char b1, char b0)
 {
 	int8_t __attribute__((aligned(16))) data[16] = { b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15};
 	return vreinterpretq_m128i_s8(vld1q_s8(data));
 }
 
-block juzix_func_mm_set_epi16(short w7, short w6, short w5, short w4, short w3, short w2, short w1, short w0)
+block platon_func_mm_set_epi16(short w7, short w6, short w5, short w4, short w3, short w2, short w1, short w0)
 {
 	int16_t __attribute__((aligned(16))) data[8] = { w0, w1, w2, w3, w4, w5, w6, w7};
 	return vreinterpretq_m128i_s16(vld1q_s16(data));
 }
 
-block juzix_func_mm_set_epi32(int i3, int i2, int i1, int i0)
+block platon_func_mm_set_epi32(int i3, int i2, int i1, int i0)
 {
 	int32_t __attribute__((aligned(16))) data[4] = { i0, i1, i2, i3 };
 	return vreinterpretq_m128i_s32(vld1q_s32(data));
 }
 
-block juzix_func_mm_set_epi64(uint64_t q1, uint64_t q0)
+block platon_func_mm_set_epi64(uint64_t q1, uint64_t q0)
 {
 	uint64_t __attribute__((aligned(16))) data[2] = { q0, q1 };
 	return vreinterpretq_m128i_s64(vld1q_u64(data));
 }
 
-block juzix_func_mm_set_epi64x(int64_t q1, int64_t q0)
+block platon_func_mm_set_epi64x(int64_t q1, int64_t q0)
 {
 	int64_t __attribute__((aligned(16))) data[2] = { q0, q1 };
 	return vreinterpretq_m128i_s64(vld1q_s64(data));
 }
 
-int juzix_func_mm_movemask_epi8(block b)
+int platon_func_mm_movemask_epi8(block b)
 {
 	uint8x16_t input = vreinterpretq_u8_m128i(b);
 	static const int8_t __attribute__((aligned(16))) xr[8] = { -7, -6, -5, -4, -3, -2, -1, 0 };
@@ -418,13 +418,13 @@ int juzix_func_mm_movemask_epi8(block b)
 	return ((hi[0] << 8) | (lo[0] & 0xFF));
 }
 
-int juzix_func_mm_testz_si128(block x, block y)
+int platon_func_mm_testz_si128(block x, block y)
 {
     uint32x4_t r = vtstq_u32(vreinterpretq_u32_m128i(x), vreinterpretq_u32_m128i(y));
     return (vgetq_lane_u32(r, 0) != 0) ? 0 : 1;
 }
 
-block juzix_func_mm_srai_epi32(block a, int count)
+block platon_func_mm_srai_epi32(block a, int count)
 {
 	block ret;
 	if (count <= 0) {
@@ -441,7 +441,7 @@ block juzix_func_mm_srai_epi32(block a, int count)
 
 }
 
-block juzix_func_mm_clmulepi64_si128 ( block a, block b, int imm8)
+block platon_func_mm_clmulepi64_si128 ( block a, block b, int imm8)
 {
     switch(imm8)
     {

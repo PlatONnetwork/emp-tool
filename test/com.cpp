@@ -1,5 +1,8 @@
-#include "emp-tool/emp-tool.h"
 #include <iostream>
+#include "emp-tool/utils/utils.h"
+#include "emp-tool/utils/com.h"
+
+
 using namespace std;
 using namespace emp;
 

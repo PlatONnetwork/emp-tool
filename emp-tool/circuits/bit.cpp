@@ -8,8 +8,8 @@ namespace emp {
 
 Bit::Bit(bool b, int party) {
 	if (party == PUBLIC)
-		bit = CircuitExecutionProxy::circ_exec.public_label(b);
-	else ProtocolExecutionProxy::prot_exec.feed(&bit, party, &b, 1); 
+		bit = CircuitExecutionProxy::public_label(b);
+	else ProtocolExecutionProxy::feed(&bit, party, &b, 1); 
 }
 
 Bit::Bit(const block& a) {
@@ -29,13 +29,13 @@ Bit Bit::select(const Bit & select, const Bit & new_v) const{
 
 bool Bit::reveal(int party) const {
 	bool res;
-	ProtocolExecutionProxy::prot_exec.reveal(&res, party, &bit, 1);
+	ProtocolExecutionProxy::reveal(&res, party, &bit, 1);
 	return res;
 }
 
 string Bit::reveal_string(int party) const {
 	bool res;
-	ProtocolExecutionProxy::prot_exec.reveal(&res, party, &bit, 1);
+	ProtocolExecutionProxy::reveal(&res, party, &bit, 1);
 	return res ? "true" : "false";
 }
 
@@ -49,12 +49,12 @@ Bit Bit::operator!=(const Bit& rhs) const {
 
 Bit Bit::operator &(const Bit& rhs) const{
 	Bit res;
-	res.bit = CircuitExecutionProxy::circ_exec.and_gate(bit, rhs.bit);
+	res.bit = CircuitExecutionProxy::and_gate(bit, rhs.bit);
 	return res;
 }
 Bit Bit::operator ^(const Bit& rhs) const{
 	Bit res;
-	res.bit = CircuitExecutionProxy::circ_exec.xor_gate(bit, rhs.bit);
+	res.bit = CircuitExecutionProxy::xor_gate(bit, rhs.bit);
 	return res;
 }
 
@@ -63,7 +63,7 @@ Bit Bit::operator |(const Bit& rhs) const{
 }
 
 Bit Bit::operator!() const {
-	return CircuitExecutionProxy::circ_exec.not_gate(bit);
+	return CircuitExecutionProxy::not_gate(bit);
 }
 
 }

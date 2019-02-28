@@ -36,8 +36,14 @@ class HalfGateGen:public CircuitExecution { public:
 		return b? one_block() : zero_block();
 	}
 	bool isDelta(const block & b) {
-		__m128i neq = _mm_xor_si128(b, delta);
-		return _mm_testz_si128(neq, neq);
+#ifdef _WIN32
+		block del = delta;
+		__m128i neq = platon_mm_xor_si128(b, del);
+		return platon_mm_testz_si128(neq, neq);
+#else
+		__m128i neq = platon_mm_xor_si128(b, delta);
+		return platon_mm_testz_si128(neq, neq);
+#endif//
 	}
 
 	block and_gate(const block& a, const block& b) override {
@@ -55,7 +61,7 @@ class HalfGateGen:public CircuitExecution { public:
 			return out[0];
 		}
 	}
-	block xor_gate(const block&a, const block& b) override {
+	block xor_gate(const block& a, const block& b) override {
 		if(isOne(&a))
 			return not_gate(b);
 		else if (isOne(&b))
@@ -74,7 +80,7 @@ class HalfGateGen:public CircuitExecution { public:
 				return res;//xorBlocks(a, b);
 		}
 	}
-	block not_gate(const block&a) override {
+	block not_gate(const block& a) override {
 		if (isZero(&a))
 			return one_block();
 		else if (isOne(&a))
