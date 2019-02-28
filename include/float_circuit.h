@@ -1,13 +1,14 @@
 #ifndef FLOAT_H__
 #define FLOAT_H__
 
+#include "constants.h"
 #include "bit.h"
 #include "integer.h"
 #include "swappable.h"
 #include "number.h"
 #include <math.h>
 namespace emp {
-class Float: Swappable<Float> { public:
+class EMP_MPC_DLL_API Float: Swappable<Float> { public:
 	Integer value;
 	Integer expnt;
 	Float(Float && in): 
@@ -29,6 +30,12 @@ class Float: Swappable<Float> { public:
 	Float(int value_length, int expnt_length, double input, int party = PUBLIC);
 
 	Float If(const Bit& select, const Float & d);
+
+    Float select(const Bit & select, const Float & a) const {
+        // temp implement
+        Float res(*this);
+        return res;
+    }
 
 	// template<typename O> 
 	// O reveal(int party = PUBLIC) const;

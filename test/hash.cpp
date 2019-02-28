@@ -1,5 +1,11 @@
-#include "emp-tool/emp-tool.h"
 #include <iostream>
+#include "emp-tool/emp-tool.h"
+#ifdef OT_NP_USE_MIRACL
+#include "emp-tool/utils/miracl_hash.h"
+#else
+#include "emp-tool/utils/hash.h"
+#endif
+
 using namespace std;
 using namespace emp;
 

@@ -1,5 +1,15 @@
 #ifdef OT_NP_USE_MIRACL
 
+#ifdef __cplusplus
+extern "C" {
+#endif//
+
+#include <miracl.h>
+
+#ifdef __cplusplus
+}
+#endif
+
 #include "emp-tool/utils/sm2_params.h"
 #include <mutex>
 #include <stdio.h>

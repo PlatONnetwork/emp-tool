@@ -1,8 +1,14 @@
 #ifndef COM_H__
 #define COM_H__
 #include <string.h>
-#include "emp-tool/utils/hash.h"
 #include "emp-tool/utils/prg.h"
+
+#ifndef OT_NP_USE_MIRACL
+#include "emp-tool/utils/hash.h"
+#else
+#include "emp-tool/utils/miracl_hash.h"
+#endif
+
 /** @addtogroup BP
     @{
   */

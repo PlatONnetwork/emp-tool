@@ -12,9 +12,9 @@
 using std::vector;
 
 namespace emp {
-class Integer : public Swappable<Integer>, public Comparable<Integer> { public:
+class EMP_MPC_DLL_API Integer : public Swappable<Integer>, public Comparable<Integer> { public:
 	int length = 0;
-	Bit* bits = nullptr;
+    Bit* bits = nullptr;
 
 	Integer(Integer&& in);
 	Integer(const Integer& in);
@@ -44,7 +44,8 @@ class Integer : public Swappable<Integer>, public Comparable<Integer> { public:
 	// template<typename O>
 	// O reveal(int party=PUBLIC) const;
 	string reveal_string(int party = PUBLIC) const;
-	int64_t reveal(int party = PUBLIC) const;
+    int64_t reveal(int party = PUBLIC) const;
+    int64_t reveal_int(int party = PUBLIC) const;
 	uint64_t reveal_uint(int party = PUBLIC) const;
 
 	Integer abs() const;
